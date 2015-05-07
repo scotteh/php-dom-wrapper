@@ -2,6 +2,9 @@
 
 namespace DOMWrap\Collections;
 
+use DOMWrap\Document;
+use DOMWrap\Traits\TraversalTrait;
+use DOMWrap\Traits\ManipulationTrait;
 use Countable, ArrayAccess, RecursiveIterator, RecursiveIteratorIterator, Traversable;
 
 /**
@@ -12,16 +15,43 @@ use Countable, ArrayAccess, RecursiveIterator, RecursiveIteratorIterator, Traver
  */
 class NodeList implements Countable, ArrayAccess, RecursiveIterator
 {
+    use TraversalTrait;
+    use ManipulationTrait;
+
     /** @var array */
     private $nodes = [];
 
     /**
+     * @param Document $document
      * @param Traversable|array $nodes
      */
-    public function __construct($nodes = []) {
+    public function __construct(Document $document, $nodes = []) {
+        $this->document = $document;
+
         foreach ($nodes as $node) {
             $this->nodes[] = $node;
         }
+    }
+
+    /**
+     * @return self
+     */
+    public function collection() {
+        return $this;
+    }
+
+    /**
+     * @return \DOMDocument
+     */
+    public function document() {
+        return $this->document;
+    }
+
+    /**
+     * @return \DOMNode
+     */
+    public function node() {
+        return $this->first()->node();
     }
 
     /**
@@ -212,6 +242,51 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
+     * @param \Closure $function
+     *
+     * @return self
+     */
+    public function each(\Closure $function) {
+        foreach ($this->nodes as $node) {
+            $result = $function($node);
+
+            if ($result === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param \Closure $function
+     *
+     * @return mixed
+     */
+    public function map(\Closure $function) {
+        $results = [];
+
+        foreach ($this->nodes as $node) {
+            $result = $function($node);
+
+            if (!is_null($result) && $result !== false) {
+                $results[] = $result;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param \Closure $function
+     *
+     * @return mixed[]
+     */
+    public function reduce(\Closure $function, $initial = null) {
+        return array_reduce($this->nodes, $function, $initial);
+    }
+
+    /**
      * @return mixed
      */
     public function toArray() {
@@ -219,19 +294,10 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
-     * @return self
+     * @param Traversable|array $nodes
      */
-    public function remove() {
-        foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMNode
-              && $node->parentNode instanceof \DOMNode) {
-                $node->parentNode->removeChild($node);
-            }
-        }
-
-        $this->nodes = [];
-
-        return $this;
+    public function fromArray($nodes = []) {
+        $this->nodes = $nodes;
     }
 
     /**
@@ -244,6 +310,6 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
             $elements = $elements->toArray();
         }
 
-        return new static(array_merge($this->toArray(), $elements));
+        return $this->newNodeList(array_merge($this->toArray(), $elements));
     }
 }

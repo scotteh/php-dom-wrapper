@@ -3,6 +3,8 @@
 namespace DOMWrap;
 
 use DOMWrap\Traits\NodeTrait;
+use DOMWrap\Traits\TraversalTrait;
+use DOMWrap\Traits\ManipulationTrait;
 
 /**
  * Text Node
@@ -13,4 +15,6 @@ use DOMWrap\Traits\NodeTrait;
 class Text extends \DOMText
 {
     use NodeTrait;
+    use TraversalTrait;
+    use ManipulationTrait;
 }

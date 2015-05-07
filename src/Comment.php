@@ -3,6 +3,8 @@
 namespace DOMWrap;
 
 use DOMWrap\Traits\NodeTrait;
+use DOMWrap\Traits\TraversalTrait;
+use DOMWrap\Traits\ManipulationTrait;
 
 /**
  * Comment Node
@@ -13,4 +15,6 @@ use DOMWrap\Traits\NodeTrait;
 class Comment extends \DOMComment
 {
     use NodeTrait;
+    use TraversalTrait;
+    use ManipulationTrait;
 }

@@ -2,7 +2,9 @@
 
 namespace DOMWrap;
 
-use DOMWrap\Traits\NodeTrait;
+use DOMWrap\Collections\NodeList;
+use DOMWrap\Traits\TraversalTrait;
+use DOMWrap\Traits\ManipulationTrait;
 
 /**
  * Document Node
@@ -12,7 +14,8 @@ use DOMWrap\Traits\NodeTrait;
  */
 class Document extends \DOMDocument
 {
-    use NodeTrait;
+    use TraversalTrait;
+    use ManipulationTrait;
 
     public function __construct($version = null, $encoding = null) {
         parent::__construct($version, $encoding);
@@ -23,7 +26,7 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @see NodeTrait::document()
+     * @see TraversalTrait::document()
      *
      * @return Document
      */
@@ -32,7 +35,21 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @see NodeTrait::parent()
+     * @return NodeList
+     */
+    public function collection() {
+        return $this->newNodeList([$this]);
+    }
+
+    /**
+     * @return NodeList
+     */
+    public function node() {
+        return $this;
+    }
+
+    /**
+     * @see TraversalTrait::parent()
      *
      * @return Element
      */
@@ -41,13 +58,22 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @see NodeTrait::replace()
+     * @see TraversalTrait::parents()
+     *
+     * @return NodeList
+     */
+    public function parents() {
+        return $this->newNodeList();
+    }
+
+    /**
+     * @see TraversalTrait::replaceWith()
      *
      * @param \DOMNode $newNode
      *
      * @return self
      */
-    public function replace($newNode) {
+    public function replaceWith($newNode) {
         $this->replaceChild($newNode, $this);
 
         return $this;
