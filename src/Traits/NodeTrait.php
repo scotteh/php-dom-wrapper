@@ -12,6 +12,9 @@ use DOMWrap\Collections\NodeList;
  */
 trait NodeTrait
 {
+    /** @var \DOMWrap\Document */
+    protected $ownerDocument;
+
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
 

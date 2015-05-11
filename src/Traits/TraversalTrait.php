@@ -17,6 +17,9 @@ define('DOM_NODE_TEXT_NORMALISED', 2);
  */
 trait TraversalTrait
 {
+    /** @see Document::collection(), NodeTrait::collection() */
+    abstract public function collection();
+
     /** @see Document::document(), NodeTrait::document() */
     abstract public function document();
 
@@ -28,7 +31,11 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function newNodeList($nodes = []) {
+    public function newNodeList($nodes = null) {
+        if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
+            $nodes = [];
+        }
+
         return new NodeList($this->document(), $nodes);
     }
 
@@ -73,12 +80,12 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector
+     * @param string $xpath
      *
      * @return bool
      */
     public function isXPath($xpath) {
-        $nodes = $this->findXPath($xpath, 'self::');
+        $nodes = $this->findXPath($xpath);
 
         return $nodes->count() != 0;
     }
@@ -118,7 +125,7 @@ trait TraversalTrait
      * @return \DOMNode|null
      */
     public function prevXPath($xpath = null) {
-        return $this->prevAllXPath()->first();
+        return $this->prevAllXPath($xpath)->first();
     }
 
     /**
@@ -166,7 +173,7 @@ trait TraversalTrait
      * @return \DOMNode|null
      */
     public function nextXPath($xpath = null) {
-        return $this->nextAllXPath()->first();
+        return $this->nextAllXPath($xpath)->first();
     }
 
     /**
@@ -223,12 +230,12 @@ trait TraversalTrait
      */
     public function parent() {
         return $this->collection()->reduce(function($carry, $node) {
-            if ($this->parentNode instanceof \DOMDocument) {
+            if ($node->parentNode instanceof \DOMDocument) {
                 return $carry;
             }
 
             return $carry->merge(
-                $this->newNodeList($this->parentNode)
+                $node->newNodeList($node->parentNode)
             );
         }, $this->newNodeList());
     }

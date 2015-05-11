@@ -19,13 +19,20 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     use ManipulationTrait;
 
     /** @var array */
-    private $nodes = [];
+    protected $nodes = [];
+
+    /** @var Document */
+    protected $document;
 
     /**
      * @param Document $document
      * @param Traversable|array $nodes
      */
-    public function __construct(Document $document, $nodes = []) {
+    public function __construct(Document $document, $nodes = null) {
+        if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
+            $nodes = [];
+        }
+
         $this->document = $document;
 
         foreach ($nodes as $node) {
@@ -296,7 +303,11 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     /**
      * @param Traversable|array $nodes
      */
-    public function fromArray($nodes = []) {
+    public function fromArray($nodes = null) {
+        if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
+            $nodes = [];
+        }
+
         $this->nodes = $nodes;
     }
 
