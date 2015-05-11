@@ -29,7 +29,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
      * @param Traversable|array $nodes
      */
     public function __construct(Document $document, $nodes = null) {
-        if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
+        if (!$this->isArrayLike($nodes)) {
             $nodes = [];
         }
 
@@ -38,6 +38,20 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
         foreach ($nodes as $node) {
             $this->nodes[] = $node;
         }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments) {
+        if (!method_exists($this->first(), $name)) {
+            throw new \BadMethodCallException("Call to undefined method " . get_class($this) . '::' . $name . "()");
+        }
+
+        return call_user_func_array(array($this->first(), $name), $arguments);
     }
 
     /**
@@ -55,10 +69,12 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
+     * @param NodeList $nodeList
+     *
      * @return \DOMNode
      */
-    public function node() {
-        return $this->first()->node();
+    public function result($nodeList) {
+        return $nodeList;
     }
 
     /**
@@ -294,6 +310,19 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
+     * @param $input mixed
+     *
+     * @return bool
+     */
+    public function isArrayLike($input) {
+        if (is_array($input) || $input instanceof \Traversable) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @return mixed
      */
     public function toArray() {
@@ -304,7 +333,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
      * @param Traversable|array $nodes
      */
     public function fromArray($nodes = null) {
-        if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
+        if (!$this->isArrayLike($nodes)) {
             $nodes = [];
         }
 

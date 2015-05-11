@@ -5,10 +5,6 @@ namespace DOMWrap\Traits;
 use DOMWrap\Collections\NodeList;
 use Symfony\Component\CssSelector\CssSelector;
 
-define('DOM_NODE_TEXT_DEFAULT', 0);
-define('DOM_NODE_TEXT_TRIM', 1);
-define('DOM_NODE_TEXT_NORMALISED', 2);
-
 /**
  * Traversal Trait
  *
@@ -23,8 +19,8 @@ trait TraversalTrait
     /** @see Document::document(), NodeTrait::document() */
     abstract public function document();
 
-    /** @see Document::node(), NodeTrait::node() */
-    abstract public function node();
+    /** @see Document::result(), NodeTrait::result() */
+    abstract public function result($nodeList);
 
     /**
      * @param Traversable|array $nodes
@@ -33,7 +29,11 @@ trait TraversalTrait
      */
     public function newNodeList($nodes = null) {
         if (!is_array($nodes) && !($nodes instanceof \Traversable)) {
-            $nodes = [];
+            if (!is_null($nodes)) {
+                $nodes = [$nodes];
+            } else {
+                $nodes = [];
+            }
         }
 
         return new NodeList($this->document(), $nodes);
@@ -61,7 +61,7 @@ trait TraversalTrait
 
         foreach ($this->collection() as $node) {
             $results = $results->merge(
-                $this->newNodeList($domxpath->query($xpath, $node))
+                $node->newNodeList($domxpath->query($xpath, $node))
             );
         }
 
@@ -80,17 +80,6 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $xpath
-     *
-     * @return bool
-     */
-    public function isXPath($xpath) {
-        $nodes = $this->findXPath($xpath);
-
-        return $nodes->count() != 0;
-    }
-
-    /**
      * @param string $selector
      *
      * @return bool
@@ -102,99 +91,51 @@ trait TraversalTrait
     }
 
     /**
-     * @param selector|null $selector 
+     * @param string $selector 
      *
      * @return \DOMNode|null
      */
-    public function prev($selector = null) {
-        return $this->prevXPath(CssSelector::toXPath($selector, 'self::'));
+    public function prev($selector = '') {
+        $result = $this->prevAll($selector . '[1]');
+
+        if (!$result->count()) {
+            return null;
+        }
+
+        return $result->first();
     }
 
     /**
-     * @param selector|null $selector 
+     * @param string $selector 
      *
      * @return NodeList
      */
-    public function prevAll($selector = null) {
-        return $this->prevAllXPath(CssSelector::toXPath($selector, 'self::'));
+    public function prevAll($selector = '') {
+        return $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::'));
     }
 
     /**
-     * @param string|null $xpath
+     * @param string $selector 
      *
      * @return \DOMNode|null
      */
-    public function prevXPath($xpath = null) {
-        return $this->prevAllXPath($xpath)->first();
+    public function next($selector = '') {
+        $result = $this->nextAll($selector . '[1]');
+
+        if (!$result->count()) {
+            return null;
+        }
+
+        return $result->first();
     }
 
     /**
-     * @param string|null $xpath
+     * @param string $selector 
      *
      * @return NodeList
      */
-    public function prevAllXPath($xpath = null) {
-        $results = $this->collection()->reduce(function($carry, $child) use ($xpath) {
-            $nodes = [];
-
-            for ($sibling = $child; ($sibling = $sibling->previousSibling) !== null;) {
-                if (empty($xpath) || $this->isXPath($xpath)) {
-                    $nodes[] = $sibling;
-                }
-            }
-
-            return array_merge($carry, $nodes);
-        }, []);
-
-        return $this->newNodeList($results);
-    }
-
-    /**
-     * @param selector|null $selector 
-     *
-     * @return \DOMNode|null
-     */
-    public function next($selector = null) {
-        return $this->nextXPath(CssSelector::toXPath($selector, 'self::'));
-    }
-
-    /**
-     * @param selector|null $selector 
-     *
-     * @return NodeList
-     */
-    public function nextAll($selector = null) {
-        return $this->nextAllXPath(CssSelector::toXPath($selector, 'self::'));
-    }
-
-    /**
-     * @param string|null $xpath
-     *
-     * @return \DOMNode|null
-     */
-    public function nextXPath($xpath = null) {
-        return $this->nextAllXPath($xpath)->first();
-    }
-
-    /**
-     * @param string|null $xpath
-     *
-     * @return NodeList
-     */
-    public function nextAllXPath($xpath = null) {
-        $results = $this->collection()->reduce(function($carry, $child) use ($xpath) {
-            $nodes = [];
-
-            for ($sibling = $child; ($sibling = $sibling->nextSibling) !== null;) {
-                if (empty($xpath) || $this->isXPath($xpath)) {
-                    $nodes[] = $sibling;
-                }
-            }
-
-            return array_merge($carry, $nodes);
-        }, []);
-
-        return $this->newNodeList($results);
+    public function nextAll($selector = '') {
+        return $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::'));
     }
 
     /**
@@ -203,13 +144,32 @@ trait TraversalTrait
      * @return NodeList
      */
     public function siblings($selector = null) {
-        return $this->collection()->reduce(function($carry, $node) use ($selector) {
+        $results = $this->collection()->reduce(function($carry, $node) use ($selector) {
             return $carry->merge(
                 $node->prevAll($selector)->merge(
                     $node->nextAll($selector)
                 )
             );
         }, $this->newNodeList());
+
+        return $results;
+    }
+
+    /**
+     * @param string|null $xpath 
+     *
+     * @return NodeList
+     */
+    public function siblingsXPath($xpath = null) {
+        $results = $this->collection()->reduce(function($carry, $node) use ($xpath) {
+            return $carry->merge(
+                $node->prevAllXPath($xpath)->merge(
+                    $node->nextAllXPath($xpath)
+                )
+            );
+        }, $this->newNodeList());
+
+        return $results;
     }
 
     /**
@@ -218,19 +178,22 @@ trait TraversalTrait
      * @return NodeList
      */
     public function children() {
-        return $this->collection()->reduce(function($carry, $node) {
+        $results = $this->collection()->reduce(function($carry, $node) {
             return $carry->merge(
                 $node->newNodeList($node->childNodes)
             );
         }, $this->newNodeList());
+
+        return $results;
     }
 
     /**
-     * @return Element
+     * @return Element|NodeList|null
      */
     public function parent() {
-        return $this->collection()->reduce(function($carry, $node) {
-            if ($node->parentNode instanceof \DOMDocument) {
+        $results = $this->collection()->reduce(function($carry, $node) {
+            // Don't try and ready parentNode property on \DOMDocument, it's already the top node.
+            if ($node instanceof \DOMDocument) {
                 return $carry;
             }
 
@@ -238,5 +201,9 @@ trait TraversalTrait
                 $node->newNodeList($node->parentNode)
             );
         }, $this->newNodeList());
+
+        return $this->result(
+            $results
+        );
     }
 }

@@ -4,6 +4,10 @@ namespace DOMWrap\Traits;
 
 use DOMWrap\Collections\NodeList;
 
+define('DOM_NODE_TEXT_DEFAULT', 0);
+define('DOM_NODE_TEXT_TRIM', 1);
+define('DOM_NODE_TEXT_NORMALISED', 2);
+
 /**
  * Manipulation Trait
  *
@@ -24,8 +28,8 @@ trait ManipulationTrait
     /** @see Document::document(), NodeTrait::document() */
     abstract public function document();
 
-    /** @see Document::node(), NodeTrait::node() */
-    abstract public function node();
+    /** @see Document::result(), NodeTrait::result() */
+    abstract public function result($nodeList);
 
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);

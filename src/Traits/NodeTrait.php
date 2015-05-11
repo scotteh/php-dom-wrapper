@@ -33,9 +33,15 @@ trait NodeTrait
     }
 
     /**
-     * @return self
+     * @param NodeList $nodeList
+     *
+     * @return \DOMNode
      */
-    public function node() {
-        return $this;
+    public function result($nodeList) {
+        if ($nodeList->count()) {
+            return $nodeList->first();
+        }
+
+        return null;
     }
 }
