@@ -35,6 +35,44 @@ trait ManipulationTrait
     abstract public function newNodeList($nodes = []);
 
     /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    protected function inputAsNodeList($input) {
+        if ($input instanceof \DOMNode) {
+            $nodes = $this->newNodeList([$input]);
+        } else if (is_string($input)) {
+            $nodes = $this->nodesFromHtml($input);
+        } else if ($input instanceof NodeList) {
+            $nodes = $input;
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        return $nodes;
+    }
+
+    /**
+     * @param string $html
+     *
+     * @return NodeList
+     */
+    protected function nodesFromHtml($html) {
+        $class = get_class($this->document());
+        $doc = new $class();
+        $nodes = $doc->html($html)->find('body > *');
+
+        $newNodes = $this->newNodeList();
+
+        foreach ($nodes as $node) {
+            $newNodes[] = $this->document()->importNode($node, true);
+        }
+
+        return $newNodes;
+    }
+
+    /**
      * @param string|null $selector
      *
      * @return self
@@ -73,25 +111,6 @@ trait ManipulationTrait
     }
 
     /**
-     * @param \DOMNode|NodeList $nodes
-     *
-     * @return self
-     */
-    public function append($nodes) {
-        if (!($nodes instanceof NodeList)) {
-            $nodes = $this->newNodeList([$nodes]);
-        }
-
-        $this->collection()->each(function($parent) use ($nodes) {
-            foreach ($nodes as $node) {
-                $parent->appendChild($node);
-            }
-        });
-
-        return $this;
-    }
-
-    /**
      * @param int $flag
      *
      * @return string
@@ -111,4 +130,77 @@ trait ManipulationTrait
 
         return $text;
     }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function before($input) {
+        $this->collection()->each(function($node) use($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            foreach ($newNodes as $newNode) {
+                $node->parent()->insertBefore($newNode, $node);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function after($input) {
+        $this->collection()->each(function($node) use($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            foreach ($newNodes as $newNode) {
+                if (is_null($node->next())) {
+                    $node->parent()->appendChild($newNode);
+                } else {
+                    $node->parent()->insertBefore($newNode, $node->next());
+                }
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function prepend($input) {
+        $this->collection()->each(function($node) use($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            foreach ($newNodes as $newNode) {
+                $node->insertBefore($newNode, $node->children()->first());
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function append($input) {
+        $this->collection()->each(function($node) use($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            foreach ($newNodes as $newNode) {
+                $node->appendChild($newNode);
+            }
+        });
+
+        return $this;
+    }
+
 }
