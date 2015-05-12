@@ -96,7 +96,7 @@ trait TraversalTrait
      * @return \DOMNode|null
      */
     public function prev($selector = '') {
-        $result = $this->prevAll($selector . '[1]');
+        $result = $this->prevAll($selector, '[1]');
 
         if (!$result->count()) {
             return null;
@@ -110,8 +110,8 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function prevAll($selector = '') {
-        return $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::'));
+    public function prevAll($selector = '', $postfix = '') {
+        return $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::') . $postfix);
     }
 
     /**
@@ -120,7 +120,7 @@ trait TraversalTrait
      * @return \DOMNode|null
      */
     public function next($selector = '') {
-        $result = $this->nextAll($selector . '[1]');
+        $result = $this->nextAll($selector, '[1]');
 
         if (!$result->count()) {
             return null;
@@ -134,8 +134,8 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function nextAll($selector = '') {
-        return $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::'));
+    public function nextAll($selector = '', $postfix = '') {
+        return $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::') . $postfix);
     }
 
     /**
