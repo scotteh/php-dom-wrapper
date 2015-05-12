@@ -85,7 +85,7 @@ trait ManipulationTrait
         }
 
         $nodes->each(function($node) {
-            if ($node instanceof \DOMNode && $node->parent() instanceof \DOMNode) {
+            if ($node->parent() instanceof \DOMNode) {
                 $node->parent()->removeChild($node);
             }
         });
@@ -96,14 +96,16 @@ trait ManipulationTrait
     }
 
     /**
-     * @param \DOMNode $newNode
+     * @param string|NodeList|\DOMNode $input
      *
      * @return self
      */
-    public function replaceWith($newNode) {
-        $this->collection()->each(function($parent) use ($newNode) {
-            if ($parent->parent() instanceof \DOMNode) {
-                $parent->parent()->replaceChild($newNode, $parent);
+    public function replaceWith($input) {
+        $this->collection()->each(function($node) use ($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            foreach ($newNodes as $newNode) {
+                $node->parent()->replaceChild($newNode, $node);
             }
         });
 
