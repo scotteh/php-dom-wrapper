@@ -2,7 +2,7 @@
 
 ##Intro
 
-PHP DOM Wrapper is a simple DOM wrapper library to manipulate and traverse HTML documents. Based around jQuery's manipulation and traversal methods, it largely mimics the behaviour it's jQuery counterparts.
+PHP DOM Wrapper is a simple DOM wrapper library to manipulate and traverse HTML documents. Based around jQuery's manipulation and traversal methods, largely mimicking the behaviour of it's jQuery counterparts.
 
 ##Author
 
