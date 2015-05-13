@@ -35,6 +35,22 @@ trait ManipulationTrait
     abstract public function newNodeList($nodes = []);
 
     /**
+     * Magic method - Trap function names using reserved keyword (empty, clone, etc..)
+     *
+     * @param string $name
+     * @param mixed $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments) {
+        if (!method_exists($this, '_' . $name)) {
+            throw new \BadMethodCallException("Call to undefined method " . get_class($this) . '::' . $name . "()");
+        }
+
+        return call_user_func_array([$this, '_' . $name], $arguments);
+    }
+
+    /**
      * @param string|NodeList|\DOMNode $input
      *
      * @return NodeList
@@ -203,6 +219,49 @@ trait ManipulationTrait
         });
 
         return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function html($input) {
+        $this->collection()->each(function($node) use($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            $node->children()->remove();
+
+            foreach ($newNodes as $newNode) {
+                $node->appendChild($newNode);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function _empty() {
+        $this->collection()->each(function($node) {
+            $node->children()->remove();
+        });
+
+        return $this;
+    }
+
+    /**
+     * @return NodeList|\DOMNode
+     */
+    public function _clone() {
+        $clonedNodes = $this->newNodeList();
+
+        $this->collection()->each(function($node) use($clonedNodes) {
+            $clonedNodes[] = $node->cloneNode(true);
+        });
+
+        return $this->result($clonedNodes);
     }
 
 }

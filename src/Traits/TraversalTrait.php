@@ -202,8 +202,15 @@ trait TraversalTrait
             );
         }, $this->newNodeList());
 
-        return $this->result(
-            $results
-        );
+        return $this->result($results);
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return \DOMNode|null
+     */
+    public function eq($index) {
+        return $this->collection()->offsetGet($index);
     }
 }

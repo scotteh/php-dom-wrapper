@@ -16,7 +16,9 @@ use Countable, ArrayAccess, RecursiveIterator, RecursiveIteratorIterator, Traver
 class NodeList implements Countable, ArrayAccess, RecursiveIterator
 {
     use TraversalTrait;
-    use ManipulationTrait;
+    use ManipulationTrait {
+        ManipulationTrait::__call as __manipulationCall;
+    }
 
     /** @var array */
     protected $nodes = [];
@@ -47,11 +49,17 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
      * @return mixed
      */
     public function __call($name, $arguments) {
-        if (!method_exists($this->first(), $name)) {
-            throw new \BadMethodCallException("Call to undefined method " . get_class($this) . '::' . $name . "()");
+        try {
+            $result = $this->__manipulationCall($name, $arguments);
+        } catch (\BadMethodCallException $e) {
+            if (!method_exists($this->first(), $name)) {
+                throw new \BadMethodCallException("Call to undefined method " . get_class($this) . '::' . $name . "()");
+            }
+
+            $result = call_user_func_array([$this->first(), $name], $arguments);
         }
 
-        return call_user_func_array(array($this->first(), $name), $arguments);
+        return $result;
     }
 
     /**
@@ -71,7 +79,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     /**
      * @param NodeList $nodeList
      *
-     * @return \DOMNode
+     * @return NodeList
      */
     public function result($nodeList) {
         return $nodeList;
