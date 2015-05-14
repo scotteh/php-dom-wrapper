@@ -335,29 +335,60 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string $class
+     * @internal
      *
-     * @return self
+     * @param string $name
+     * @param string $value
+     * @param bool $addValue
      */
-    public function addClass($class) {
-        $this->collection()->each(function($node) use($class) {
+    protected function _pushAttrValue($name, $value, $addValue = false) {
+        $this->collection()->each(function($node) use($name, $value, $addValue) {
             if ($node instanceof \DOMElement) {
-                $attr = $this->getAttribute('class');
+                $attr = $this->getAttribute($name);
 
-                // Remove any existing instances of the class
-                $classes = array_filter(explode(' ', $attr), function($value) use($class) {
-                    if (strcasecmp($value, $class) == 0) {
+                // Remove any existing instances of the value, or empty values.
+                $values = array_filter(explode(' ', $attr), function($_value) use($value) {
+                    if (strcasecmp($_value, $value) == 0 || empty($_value)) {
                         return false;
                     }
 
                     return true;
                 });
 
-                $classes[] = $class;
+                // If required add attr value to array
+                if ($addValue) {
+                    $values[] = $value;
+                }
 
-                $node->setAttribute('class', implode(' ', $classes));
+                // Set the attr if we either have values, or the attr already
+                //  existed (we might be removing classes).
+                //
+                // Don't set the attr if it doesn't already exist.
+                if (!empty($values) || $node->hasAttribute($name)) {
+                    $node->setAttribute($name, implode(' ', $values));
+                }
             }
         });
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return self
+     */
+    public function addClass($class) {
+        $this->_pushAttrValue('class', $class, true);
+
+        return $this;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return self
+     */
+    public function removeClass($class) {
+        $this->_pushAttrValue('class', $class);
 
         return $this;
     }
