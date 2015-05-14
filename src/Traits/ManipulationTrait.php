@@ -278,4 +278,59 @@ trait ManipulationTrait
 
         return $this;
     }
+
+    /**
+     * @internal
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    protected function _getAttr($name) {
+        $node = $this->collection()->first();
+
+        if (!($node instanceof \DOMElement)) {
+            return null;
+        }
+
+        $result = $node->getAttribute($name);
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @internal
+     *
+     * @param string $name
+     * @param string|null $value
+     *
+     * @return self
+     */
+    protected function _setAttr($name, $value) {
+        $this->collection()->each(function($node) use($name, $value) {
+            if ($node instanceof \DOMElement) {
+                $node->setAttribute($name, $value);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $value
+     *
+     * @return self|mixed
+     */
+    public function attr($name, $value = null) {
+        if (is_null($value)) {
+            return $this->_getAttr($name);
+        } else {
+            return $this->_setAttr($name, $value);
+        }
+    }
 }
