@@ -50,21 +50,21 @@ require('vendor/autoload.php');
 
 | Method | Implemented |
 |--------|-------------|
-| addClass    | No |
+| addClass    | **Yes** |
 | after       | **Yes** |
 | append      | **Yes** |
-| attr        | No |
+| attr        | **Yes** |
 | before      | **Yes** |
 | clone       | **Yes** |
 | detach      | No |
 | empty       | **Yes** |
-| hasClass    | No |
+| hasClass    | **Yes** |
 | html        | **Yes** |
 | prepend     | **Yes** |
 | prop        | No |
 | remove      | **Yes** |
-| removeAttr  | No |
-| removeClass | No |
+| removeAttr  | **Yes** |
+| removeClass | **Yes** |
 | removeProp  | No |
 | replaceWith | **Yes** |
 | text        | **Yes** |
