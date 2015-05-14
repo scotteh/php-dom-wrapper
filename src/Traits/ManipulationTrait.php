@@ -264,4 +264,18 @@ trait ManipulationTrait
         return $this->result($clonedNodes);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return self
+     */
+    public function removeAttr($name) {
+        $this->collection()->each(function($node) use($name) {
+            if ($node instanceof \DOMElement) {
+                $node->removeAttribute($name);
+            }
+        });
+
+        return $this;
+    }
 }
