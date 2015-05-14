@@ -13,7 +13,7 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->html('<table><tr><th>test</th><td>test!</td></tr></table>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testHtmlNodeEmpty() {
@@ -23,7 +23,7 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->html('<table><tr><th>test</th><td>test!</td></tr></table>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testHtmlNodeList() {
@@ -33,7 +33,7 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->html('<table><tr><th>test</th><td>test!</td></tr></table>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testHtmlNodeListNone() {
@@ -43,6 +43,6 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->html('<table><tr><th>test</th><td>test!</td></tr></table>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 }

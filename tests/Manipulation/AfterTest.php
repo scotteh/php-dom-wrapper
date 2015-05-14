@@ -13,7 +13,7 @@ class AfterTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->after('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testAfterNodeList() {
@@ -23,7 +23,7 @@ class AfterTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->after('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testAfterNodeListNested() {
@@ -33,6 +33,6 @@ class AfterTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->after('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 }

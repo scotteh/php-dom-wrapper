@@ -13,7 +13,7 @@ class ReplaceWithTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->replaceWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testReplaceWithNodeList() {
@@ -23,7 +23,7 @@ class ReplaceWithTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->replaceWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testReplaceWithNodeListNested() {
@@ -33,6 +33,6 @@ class ReplaceWithTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->replaceWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 }

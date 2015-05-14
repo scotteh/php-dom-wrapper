@@ -13,7 +13,7 @@ class PrependTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->prepend('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testPrependNodeList() {
@@ -23,7 +23,7 @@ class PrependTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->prepend('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testPrependNodeListNested() {
@@ -33,6 +33,6 @@ class PrependTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->prepend('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 }

@@ -13,7 +13,7 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->empty();
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testEmptyNodeEmpty() {
@@ -23,7 +23,7 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->first()->empty();
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testEmptyNodeList() {
@@ -33,7 +33,7 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->empty();
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
     public function testEmptyNodeListNone() {
@@ -43,6 +43,6 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('.test');
         $nodes->empty();
 
-        $this->assertEqualXMLStructure($expected->firstChild, $doc->firstChild);
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 }
