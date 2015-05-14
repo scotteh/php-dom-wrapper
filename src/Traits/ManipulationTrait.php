@@ -392,4 +392,23 @@ trait ManipulationTrait
 
         return $this;
     }
+
+    /**
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function hasClass($class) {
+        $attr = $this->_getAttr('class');
+
+        $exists = array_reduce(explode(' ', $attr), function($carry, $item) use($class) {
+            if ($carry || strcasecmp($item, $class) == 0) {
+                return true;
+            }
+
+            return false;
+        }, false);
+
+        return $exists;
+    }
 }
