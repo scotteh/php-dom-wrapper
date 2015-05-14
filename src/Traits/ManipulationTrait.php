@@ -344,7 +344,7 @@ trait ManipulationTrait
     protected function _pushAttrValue($name, $value, $addValue = false) {
         $this->collection()->each(function($node) use($name, $value, $addValue) {
             if ($node instanceof \DOMElement) {
-                $attr = $this->getAttribute($name);
+                $attr = $node->getAttribute($name);
 
                 // Remove any existing instances of the value, or empty values.
                 $values = array_filter(explode(' ', $attr), function($_value) use($value) {
