@@ -333,4 +333,32 @@ trait ManipulationTrait
             return $this->_setAttr($name, $value);
         }
     }
+
+    /**
+     * @param string $class
+     *
+     * @return self
+     */
+    public function addClass($class) {
+        $this->collection()->each(function($node) use($class) {
+            if ($node instanceof \DOMElement) {
+                $attr = $this->getAttribute('class');
+
+                // Remove any existing instances of the class
+                $classes = array_filter(explode(' ', $attr), function($value) use($class) {
+                    if (strcasecmp($value, $class) == 0) {
+                        return false;
+                    }
+
+                    return true;
+                });
+
+                $classes[] = $class;
+
+                $node->setAttribute('class', implode(' ', $classes));
+            }
+        });
+
+        return $this;
+    }
 }
