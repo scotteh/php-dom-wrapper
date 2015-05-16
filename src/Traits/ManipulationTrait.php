@@ -418,7 +418,7 @@ trait ManipulationTrait
      *
      * @return \SplStack
      */
-    protected function _getFirstChildBranchStack(Element $node) {
+    protected function _getFirstChildWrapStack(Element $node) {
         $stack = new \SplStack;
 
         do {
@@ -434,6 +434,24 @@ trait ManipulationTrait
     }
 
     /**
+     * @param Element $node
+     *
+     * @return \SplStack
+     */
+    protected function _prepareWrapStack(Element $node) {
+        // Generate a stack (root to leaf) of the wrapper.
+        // Includes only first element nodes / first element children.
+        $stackNodes = $this->_getFirstChildWrapStack($node);
+
+        // Only using the first element, remove any siblings.
+        foreach ($stackNodes as $stackNode) {
+            $stackNode->siblings()->remove();
+        }
+
+        return $stackNodes;
+    }
+
+    /**
      * @param string|NodeList|\DOMNode $input
      *
      * @return self
@@ -445,24 +463,48 @@ trait ManipulationTrait
             $firstNewNode = $newNodes->filterXPath('self::*')->first();
 
             if ($firstNewNode instanceof Element) {
-                // Generate a stack root to leaf of the wrapper
-                $branchStack = $this->_getFirstChildBranchStack($firstNewNode);
-
-                // Only using the first element, remove any siblings.
-                foreach ($branchStack as $branchNode) {
-                    $branchNode->siblings()->remove();
-                }
+                // Pre-process wrapper into a stack of first element nodes.
+                $stackNodes = $this->_prepareWrapStack($firstNewNode);
 
                 foreach ($node->children() as $child) {
                     // Remove child from the current node
                     $oldChild = $node->removeChild($child);
 
                     // Add it back as a child of the top (leaf) node on the stack
-                    $branchStack->top()->append($oldChild);
+                    $stackNodes->top()->append($oldChild);
                 }
 
                 // Add the bottom (root) node on the stack
-                $node->append($branchStack->bottom());
+                $node->append($stackNodes->bottom());
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function wrap($input) {
+        $this->collection()->each(function($node) use ($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            $firstNewNode = $newNodes->filterXPath('self::*')->first();
+
+            if ($firstNewNode instanceof Element) {
+                // Pre-process wrapper into a stack of first element nodes.
+                $stackNodes = $this->_prepareWrapStack($firstNewNode);
+
+                // Add the new bottom (root) node after the current node
+                $node->after($stackNodes->bottom());
+
+                // Remove the current node
+                $oldNode = $node->parent()->removeChild($node);
+
+                // Add the 'current node' back inside the new top (leaf) node.
+                $stackNodes->top()->append($oldNode);
             }
         });
 

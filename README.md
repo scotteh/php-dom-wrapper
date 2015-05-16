@@ -69,7 +69,7 @@ require('vendor/autoload.php');
 | replaceWith | **Yes** |
 | text        | **Yes** |
 | unwrap      | No |
-| wrap        | No |
+| wrap        | **Yes** |
 | wrapAll     | No |
 | wrapInner   | **Yes** |
 
