@@ -71,7 +71,7 @@ require('vendor/autoload.php');
 | unwrap      | No |
 | wrap        | No |
 | wrapAll     | No |
-| wrapInner   | No |
+| wrapInner   | **Yes** |
 
 ###Traversal
 
@@ -84,7 +84,7 @@ require('vendor/autoload.php');
 | closest      | No |
 | contents     | No |
 | eq           | **Yes** |
-| filter       | No |
+| filter       | **Yes** |
 | find         | **Yes** |
 | first        | **Yes** |
 | has          | **Yes** |
@@ -102,7 +102,7 @@ require('vendor/autoload.php');
 | prevAll      | **Yes** |
 | prevUntil    | No |
 | siblings     | **Yes** |
-| slice        | No |
+| slice        | **Yes** |
 
 Additional Methods:
 
