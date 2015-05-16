@@ -292,7 +292,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     /**
      * @param \Closure $function
      *
-     * @return mixed
+     * @return NodeList
      */
     public function map(\Closure $function) {
         $results = [];
@@ -305,7 +305,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
             }
         }
 
-        return $results;
+        return $this->newNodeList($results);
     }
 
     /**
