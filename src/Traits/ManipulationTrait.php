@@ -2,6 +2,7 @@
 
 namespace DOMWrap\Traits;
 
+use DOMWrap\Element;
 use DOMWrap\Collections\NodeList;
 
 define('DOM_NODE_TEXT_DEFAULT', 0);
@@ -410,5 +411,61 @@ trait ManipulationTrait
         }, false);
 
         return $exists;
+    }
+
+    /**
+     * @param Element $node
+     *
+     * @return \SplStack
+     */
+    protected function _getFirstChildBranchStack(Element $node) {
+        $stack = new \SplStack;
+
+        do {
+            // Push our current node onto the stack
+            $stack->push($node);
+
+            // Get the first element child node
+            $node = $node->children()->filterXPath('self::*')->first();
+        } while ($node instanceof Element);
+
+        // Get the top most node.
+        return $stack;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function wrapInner($input) {
+        $this->collection()->each(function($node) use ($input) {
+            $newNodes = $this->inputAsNodeList($input);
+
+            $firstNewNode = $newNodes->filterXPath('self::*')->first();
+
+            if ($firstNewNode instanceof Element) {
+                // Generate a stack root to leaf of the wrapper
+                $branchStack = $this->_getFirstChildBranchStack($firstNewNode);
+
+                // Only using the first element, remove any siblings.
+                foreach ($branchStack as $branchNode) {
+                    $branchNode->siblings()->remove();
+                }
+
+                foreach ($node->children() as $child) {
+                    // Remove child from the current node
+                    $oldChild = $node->removeChild($child);
+
+                    // Add it back as a child of the top (leaf) node on the stack
+                    $branchStack->top()->append($oldChild);
+                }
+
+                // Add the bottom (parent) node on the stack
+                $node->append($branchStack->bottom());
+            }
+        });
+
+        return $this;
     }
 }
