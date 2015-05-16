@@ -71,6 +71,36 @@ trait TraversalTrait
     /**
      * @param string $selector
      *
+     * @return NodeList
+     */
+    public function filter($selector) {
+        return $this->collection()->map(function($obj) use($selector) {
+            if (!$obj->is($selector)) {
+                return null;
+            }
+
+            return $obj;
+        });
+    }
+
+    /**
+     * @param string $xpath
+     *
+     * @return NodeList
+     */
+    public function filterXPath($xpath) {
+        return $this->collection()->map(function($obj) use($xpath) {
+            if ($obj->findXPath($xpath)->count() == 0) {
+                return null;
+            }
+
+            return $obj;
+        });
+    }
+
+    /**
+     * @param string $selector
+     *
      * @return bool
      */
     public function is($selector) {
@@ -212,5 +242,17 @@ trait TraversalTrait
      */
     public function eq($index) {
         return $this->collection()->offsetGet($index);
+    }
+
+    /**
+     * @param int $start
+     * @param int $end
+     *
+     * @return NodeList
+     */
+    public function slice($start, $end = null) {
+        $nodeList = array_slice($this->collection()->toArray(), $start, $end);
+
+        return $this->newNodeList($nodeList);
     }
 }
