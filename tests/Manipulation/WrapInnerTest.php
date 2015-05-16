@@ -14,6 +14,22 @@ class WrapInnerTest extends \PHPUnit_Framework_TestCase
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
+    public function testWrapInnerNodeSingle() {
+        $expected = $this->document('<html><article><em><a href="http://example.org/">this is a test</a></em></article></html>');
+        $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
+        $doc->find('article')->first()->wrapInner('<em></em>');
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+    }
+
+    public function testWrapInnerNodeTriple() {
+        $expected = $this->document('<html><article><em><strong><pre><a href="http://example.org/">this is a test</a></pre></strong></em></article></html>');
+        $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
+        $doc->find('article')->first()->wrapInner('<em><strong><pre></pre></strong></em>');
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+    }
+
     public function testWrapInnerNodeShortHand() {
         $expected = $this->document('<html><article><em><strong><a href="http://example.org/">this is a test</a></strong></em></article></html>');
         $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
