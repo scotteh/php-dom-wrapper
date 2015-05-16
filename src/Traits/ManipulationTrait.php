@@ -461,7 +461,7 @@ trait ManipulationTrait
                     $branchStack->top()->append($oldChild);
                 }
 
-                // Add the bottom (parent) node on the stack
+                // Add the bottom (root) node on the stack
                 $node->append($branchStack->bottom());
             }
         });
