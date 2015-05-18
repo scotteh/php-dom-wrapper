@@ -70,7 +70,7 @@ require('vendor/autoload.php');
 | text        | **Yes** |
 | unwrap      | No |
 | wrap        | **Yes** |
-| wrapAll     | No |
+| wrapAll     | **Yes** |
 | wrapInner   | **Yes** |
 
 ###Traversal
@@ -96,7 +96,7 @@ require('vendor/autoload.php');
 | nextUntil    | No |
 | not          | No |
 | parent       | **Yes** |
-| parents      | No |
+| parents      | **Yes** |
 | parentsUntil | No |
 | prev         | **Yes** |
 | prevAll      | **Yes** |
