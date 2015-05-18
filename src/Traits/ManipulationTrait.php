@@ -71,6 +71,17 @@ trait ManipulationTrait
     }
 
     /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    protected function inputAsFirstNode($input) {
+        $nodes = $this->inputAsNodeList($input);
+
+        return $nodes->filterXPath('self::*')->first();
+    }
+
+    /**
      * @param string $html
      *
      * @return NodeList
@@ -458,13 +469,11 @@ trait ManipulationTrait
      */
     public function wrapInner($input) {
         $this->collection()->each(function($node) use ($input) {
-            $newNodes = $this->inputAsNodeList($input);
+            $inputNode = $this->inputAsFirstNode($input);
 
-            $firstNewNode = $newNodes->filterXPath('self::*')->first();
-
-            if ($firstNewNode instanceof Element) {
+            if ($inputNode instanceof Element) {
                 // Pre-process wrapper into a stack of first element nodes.
-                $stackNodes = $this->_prepareWrapStack($firstNewNode);
+                $stackNodes = $this->_prepareWrapStack($inputNode);
 
                 foreach ($node->children() as $child) {
                     // Remove child from the current node
@@ -489,13 +498,11 @@ trait ManipulationTrait
      */
     public function wrap($input) {
         $this->collection()->each(function($node) use ($input) {
-            $newNodes = $this->inputAsNodeList($input);
+            $inputNode = $this->inputAsFirstNode($input);
 
-            $firstNewNode = $newNodes->filterXPath('self::*')->first();
-
-            if ($firstNewNode instanceof Element) {
+            if ($inputNode instanceof Element) {
                 // Pre-process wrapper into a stack of first element nodes.
-                $stackNodes = $this->_prepareWrapStack($firstNewNode);
+                $stackNodes = $this->_prepareWrapStack($inputNode);
 
                 // Add the new bottom (root) node after the current node
                 $node->after($stackNodes->bottom());
@@ -506,6 +513,120 @@ trait ManipulationTrait
                 // Add the 'current node' back inside the new top (leaf) node.
                 $stackNodes->top()->append($oldNode);
             }
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param NodeList $nodeList
+     *
+     * @return NodeList
+     */
+    protected function _getNodesBetween(NodeList $nodeList) {
+        $nodeList = clone $nodeList;
+
+        if (!$nodeList->count() < 2) {
+            return $nodeList;
+        }
+
+        $parentNode = $nodeList->get(0)->parent();
+
+        $foundStart = false;
+        $newNodeList = $this->newNodeList();
+
+        // Loop through children of the common parent
+        foreach ($parentNode->children() as $childNode) {
+            $childNodeExists = $nodeList->exists($childNode);
+
+            // Find the starting point
+            if ($childNodeExists) {
+                $nodeList->delete($childNode);
+
+                if (!$newNodeList->count()) {
+                    $foundStart = true;
+                }
+            }
+
+            // Add all nodes start => end.
+            // Includes all non-selected siblings located in-between selected nodes.
+            if ($foundStart) {
+                $newNodeList[] = $childNode;
+            }
+
+            // Find the ending point
+            if ($childNodeExists) {
+                if (!$nodeList->count()) {
+                    $foundStart = false;
+                }
+            }
+        }
+
+        return $newNodeList;
+    }
+
+    /**
+     * @param \DOMNode $commonNode
+     *
+     * @return NodeList
+     */
+    protected function _getWrapAllNodes($commonNode) {
+        // Determine the nodes / common ancestor nodes relative to $commonNode.
+        $matchedNodes = $this->collection()->map(function($node) use($commonNode) {
+            $parents = $node->parents()->toArray();
+
+            $index = array_search($commonNode, $parents, true);
+
+            if ($index > 0) {
+                return $parents[$index-1];
+            } else {
+                return $node;
+            }
+        });
+
+        // List of all nodes to be wrapped.
+        return $this->_getNodesBetween($matchedNodes);
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return self
+     */
+    public function wrapAll($input) {
+        $commonNode = $this->intersect();
+
+        if (!($commonNode instanceof Element)) {
+            return $this;
+        }
+
+        // Collection is a single node, or the common node is already
+        //  in the collection, just call self::wrap() instead.
+        if ($this->collection()->exists($commonNode)) {
+            return $commonNode->wrap($input);
+        }
+
+        $inputNode = $this->inputAsFirstNode($input);
+
+        if (!($inputNode instanceof Element)) {
+            return $this;
+        }
+
+        // Get NodeList of all nodes within $commonNode to be wrapped.
+        $wrapNodes = $this->_getWrapAllNodes($commonNode);
+
+        // Pre-process wrapper into a stack of first element nodes.
+        $stackNodes = $this->_prepareWrapStack($inputNode);
+
+        // Add the new bottom (root) node after the current node
+        $wrapNodes->last()->after($stackNodes->bottom());
+
+        $wrapNodes->each(function($node) use($stackNodes) {
+            // Remove the current node
+            $oldNode = $node->parent()->removeChild($node);
+
+            // Add the 'current node' back inside the new top (leaf) node.
+            $stackNodes->top()->append($oldNode);
         });
 
         return $this;
