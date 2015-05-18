@@ -360,4 +360,73 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
 
         return $this->newNodeList(array_merge($this->toArray(), $elements));
     }
+
+    /**
+     * @param \DOMNode $node
+     *
+     * @return self
+     */
+    public function add(\DOMNode $node) {
+        $this->nodes[] = $node;
+
+        return $this;
+    }
+
+    /**
+     * @param \DOMNode $node
+     *
+     * @return self
+     */
+    public function push(\DOMNode $node) {
+        return $this->add($node);
+    }
+
+    /**
+     * @return \DOMNode
+     */
+    public function pop() {
+        return array_pop($this->nodes);
+    }
+
+    /**
+     * @param \DOMNode $node
+     *
+     * @return self
+     */
+    public function unshift(\DOMNode $node) {
+        array_unshift($this->nodes, $node);
+
+        return $this;
+    }
+
+    /**
+     * @return \DOMNode
+     */
+    public function shift() {
+        return array_shift($this->nodes);
+    }
+
+    /**
+     * @param \DOMNode $node
+     *
+     * @return bool
+     */
+    public function exists(\DOMNode $node) {
+        return in_array($node, $this->nodes, true);
+    }
+
+    /**
+     * @param \DOMNode $node
+     *
+     * @return self
+     */
+    public function delete(\DOMNode $node) {
+        $index = array_search($node, $this->nodes, true);
+
+        if ($index !== false) {
+            unset($this->nodes[$index]);
+        }
+
+        return $this;
+    }
 }
