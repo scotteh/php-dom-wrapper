@@ -2,6 +2,7 @@
 
 namespace DOMWrap\Traits;
 
+use DOMWrap\Element;
 use DOMWrap\Collections\NodeList;
 use Symfony\Component\CssSelector\CssSelector;
 
@@ -254,5 +255,47 @@ trait TraversalTrait
         $nodeList = array_slice($this->collection()->toArray(), $start, $end);
 
         return $this->newNodeList($nodeList);
+    }
+
+    /**
+     * @return NodeList
+     */
+    public function parents() {
+        $parents = $this->newNodeList();
+
+        $this->collection()->each(function($node) use($parents) {
+            $parent = $node->parent();
+
+            while ($parent instanceof Element) {
+                $parents[] = $parent;
+
+                $parent = $parent->parent();
+            }
+        });
+
+        return $this->newNodeList($parents)->reverse();
+    }
+
+    /**
+     * @return \DOMNode
+     */
+    public function intersect() {
+        if ($this->collection()->count() < 2) {
+            return $this->collection()->first();
+        }
+
+        $nodeParents = [];
+
+        // Build a multi-dimensional array of the collection nodes parent elements
+        $this->collection()->each(function($node) use(&$nodeParents) {
+            $nodeParents[] = $node->parents()->unshift($node)->toArray();
+        });
+
+        // Find the common parent
+        $diff = call_user_func_array('array_uintersect', array_merge($nodeParents, [function($a, $b){
+            return strcmp(spl_object_hash($a), spl_object_hash($b));
+        }]));
+
+        return array_shift($diff);
     }
 }
