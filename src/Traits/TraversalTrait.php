@@ -273,7 +273,7 @@ trait TraversalTrait
             }
         });
 
-        return $this->newNodeList($parents)->reverse();
+        return $parents->reverse();
     }
 
     /**
@@ -292,7 +292,7 @@ trait TraversalTrait
         });
 
         // Find the common parent
-        $diff = call_user_func_array('array_uintersect', array_merge($nodeParents, [function($a, $b){
+        $diff = call_user_func_array('array_uintersect', array_merge($nodeParents, [function($a, $b) {
             return strcmp(spl_object_hash($a), spl_object_hash($b));
         }]));
 

@@ -35,6 +35,9 @@ trait ManipulationTrait
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
 
+    /** @see TraversalTrait::intersect() */
+    abstract public function intersect();
+
     /**
      * Magic method - Trap function names using reserved keyword (empty, clone, etc..)
      *
@@ -578,7 +581,7 @@ trait ManipulationTrait
             $index = array_search($commonNode, $parents, true);
 
             if ($index > 0) {
-                return $parents[$index-1];
+                return $parents[$index - 1];
             } else {
                 return $node;
             }

@@ -227,8 +227,6 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
-     * @return mixed
-     *
      * @return NodeList
      */
     public function reverse() {
@@ -252,7 +250,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
-     * @param mixed $key
+     * @param int $key
      *
      * @return mixed
      */
