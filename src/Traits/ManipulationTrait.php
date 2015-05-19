@@ -106,22 +106,35 @@ trait ManipulationTrait
     /**
      * @param string|null $selector
      *
-     * @return self
+     * @return NodeList
      */
-    public function remove($selector = null) {
+    public function detach($selector = null) {
         if (!is_null($selector)) {
             $nodes = $this->find($selector);
         } else {
             $nodes = $this->collection();
         }
 
-        $nodes->each(function($node) {
+        $nodeList = $this->newNodeList();
+
+        $nodes->each(function($node) use($nodeList) {
             if ($node->parent() instanceof \DOMNode) {
-                $node->parent()->removeChild($node);
+                $nodeList[] = $node->parent()->removeChild($node);
             }
         });
 
         $nodes->fromArray([]);
+
+        return $nodeList;
+    }
+
+    /**
+     * @param string|null $selector
+     *
+     * @return self
+     */
+    public function remove($selector = null) {
+        $this->detach($selector);
 
         return $this;
     }
