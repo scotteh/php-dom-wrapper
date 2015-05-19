@@ -21,6 +21,21 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('this is a test', $nodes[0]->text());
     }
 
+    public function testDetachNodeSelect() {
+        $expected = $this->document('<html><article></article></html>');
+        $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
+        $nodes = $doc->find('article')->first()->detach('a');
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertEquals(1, $nodes->count());
+
+        $this->assertInstanceOf('\\DOMWrap\\Element', $nodes[0]);
+        $this->assertEquals('a', $nodes[0]->tagName);
+        $this->assertEquals('http://example.org/', $nodes[0]->attr('href'));
+        $this->assertEquals('this is a test', $nodes[0]->text());
+    }
+
     public function testDetachNodeList() {
         $expected = $this->document('<html><section></section><section></section></html>');
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');

@@ -91,6 +91,10 @@ class Document extends \DOMDocument
      * @return self
      */
     public function html($html, $options = 0) {
+        if (trim($html) === '') {
+            return $this;
+        }
+
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 

@@ -22,6 +22,14 @@ class AttrTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $class);
     }
 
+    public function testGetAttrNodeInvalid() {
+        $expected = null;
+        $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div></html>');
+        $class = $doc->find('div')->unshift(new \DOMWrap\Text)->attr('class');
+
+        $this->assertSame($expected, $class);
+    }
+
     public function testGetAttrNodeList() {
         $expected = 'example test';
         $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="test example"><span><em>testing 123..!</em></span></section></html>');

@@ -2,6 +2,7 @@
 
 namespace DOMWrap\Traits;
 
+use DOMWrap\Document;
 use DOMWrap\Element;
 use DOMWrap\Collections\NodeList;
 
@@ -61,16 +62,26 @@ trait ManipulationTrait
      */
     protected function inputAsNodeList($input) {
         if ($input instanceof \DOMNode) {
-            $nodes = $this->newNodeList([$input]);
+            $nodes = [$input];
         } else if (is_string($input)) {
             $nodes = $this->nodesFromHtml($input);
-        } else if ($input instanceof NodeList) {
+        } else if (is_array($input) || $input instanceof \Traversable) {
             $nodes = $input;
         } else {
             throw new \InvalidArgumentException();
         }
 
-        return $nodes;
+        $newNodes = $this->newNodeList();
+
+        foreach ($nodes as $node) {
+            if ($node->document() !== $this->document()) {
+                $newNodes[] = $this->document()->importNode($node, true);
+            } else {
+                $newNodes[] = $node;
+            }
+        }
+
+        return $newNodes;
     }
 
     /**
@@ -94,13 +105,7 @@ trait ManipulationTrait
         $doc = new $class();
         $nodes = $doc->html($html)->find('body > *');
 
-        $newNodes = $this->newNodeList();
-
-        foreach ($nodes as $node) {
-            $newNodes[] = $this->document()->importNode($node, true);
-        }
-
-        return $newNodes;
+        return $nodes;
     }
 
     /**
@@ -255,6 +260,10 @@ trait ManipulationTrait
      * @return self
      */
     public function html($input) {
+        if (trim($input) === '') {
+            return $this;
+        }
+
         $this->collection()->each(function($node) use($input) {
             $newNodes = $this->inputAsNodeList($input);
 
@@ -542,7 +551,7 @@ trait ManipulationTrait
     protected function _getNodesBetween(NodeList $nodeList) {
         $nodeList = clone $nodeList;
 
-        if (!$nodeList->count() < 2) {
+        if ($nodeList->count() < 2) {
             return $nodeList;
         }
 
