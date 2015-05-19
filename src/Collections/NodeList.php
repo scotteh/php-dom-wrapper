@@ -336,7 +336,7 @@ class NodeList implements Countable, ArrayAccess, RecursiveIterator
     }
 
     /**
-     * @param Traversable|array $nodes
+     * @param \Traversable|array $nodes
      */
     public function fromArray($nodes = null) {
         if (!$this->isArrayLike($nodes)) {
