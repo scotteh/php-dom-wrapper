@@ -634,4 +634,24 @@ trait ManipulationTrait
 
         return $this;
     }
+
+    /**
+     * @return self
+     */
+    public function unwrap() {
+        $this->collection()->each(function($node) {
+            $parent = $node->parent();
+
+            // Replace parent node (the one we're unwrapping) with it's children.
+            $parent->children()->each(function($childNode) use($parent) {
+                $oldChildNode = $parent->removeChild($childNode);
+
+                $parent->before($oldChildNode);
+            });
+
+            $parent->remove();
+        });
+
+        return $this;
+    }
 }
