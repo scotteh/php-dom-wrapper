@@ -4,7 +4,7 @@ namespace DOMWrap\Traits;
 
 use DOMWrap\Document;
 use DOMWrap\Element;
-use DOMWrap\Collections\NodeList;
+use DOMWrap\NodeList;
 
 define('DOM_NODE_TEXT_DEFAULT', 0);
 define('DOM_NODE_TEXT_TRIM', 1);
@@ -209,10 +209,10 @@ trait ManipulationTrait
             $newNodes = $this->inputAsNodeList($input);
 
             foreach ($newNodes as $newNode) {
-                if (is_null($node->next())) {
+                if (is_null($node->following())) {
                     $node->parent()->appendChild($newNode);
                 } else {
-                    $node->parent()->insertBefore($newNode, $node->next());
+                    $node->parent()->insertBefore($newNode, $node->following());
                 }
             }
         });

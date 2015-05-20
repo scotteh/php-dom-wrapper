@@ -12,7 +12,7 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('article > a')->first()->detach();
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
-        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(1, $nodes->count());
 
         $this->assertInstanceOf('\\DOMWrap\\Element', $nodes[0]);
@@ -27,7 +27,7 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('article')->first()->detach('a');
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
-        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(1, $nodes->count());
 
         $this->assertInstanceOf('\\DOMWrap\\Element', $nodes[0]);
@@ -42,7 +42,7 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('a, p')->detach();
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
-        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(2, $nodes->count());
 
         $this->assertInstanceOf('\\DOMWrap\\Element', $nodes[0]);
@@ -61,7 +61,7 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('article, section')->detach();
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
-        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(3, $nodes->count());
 
         $this->assertInstanceOf('\\DOMWrap\\Element', $nodes[0]);
@@ -83,7 +83,7 @@ class DetachTest extends \PHPUnit_Framework_TestCase
         $nodes = $doc->find('article')->detach();
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
-        $this->assertInstanceOf('\\DOMWrap\\Collections\\NodeList', $nodes);
+        $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(0, $nodes->count());
     }
 

@@ -3,7 +3,7 @@
 namespace DOMWrap\Traits;
 
 use DOMWrap\Element;
-use DOMWrap\Collections\NodeList;
+use DOMWrap\NodeList;
 use Symfony\Component\CssSelector\CssSelector;
 
 /**
@@ -126,8 +126,8 @@ trait TraversalTrait
      *
      * @return \DOMNode|null
      */
-    public function prev($selector = '') {
-        $result = $this->prevAll($selector, '[1]');
+    public function preceding($selector = '') {
+        $result = $this->precedingAll($selector, '[1]');
 
         if (!$result->count()) {
             return null;
@@ -141,7 +141,7 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function prevAll($selector = '', $postfix = '') {
+    public function precedingAll($selector = '', $postfix = '') {
         return $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::') . $postfix);
     }
 
@@ -150,8 +150,8 @@ trait TraversalTrait
      *
      * @return \DOMNode|null
      */
-    public function next($selector = '') {
-        $result = $this->nextAll($selector, '[1]');
+    public function following($selector = '') {
+        $result = $this->followingAll($selector, '[1]');
 
         if (!$result->count()) {
             return null;
@@ -165,7 +165,7 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function nextAll($selector = '', $postfix = '') {
+    public function followingAll($selector = '', $postfix = '') {
         return $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::') . $postfix);
     }
 
@@ -177,25 +177,8 @@ trait TraversalTrait
     public function siblings($selector = null) {
         $results = $this->collection()->reduce(function($carry, $node) use ($selector) {
             return $carry->merge(
-                $node->prevAll($selector)->merge(
-                    $node->nextAll($selector)
-                )
-            );
-        }, $this->newNodeList());
-
-        return $results;
-    }
-
-    /**
-     * @param string|null $xpath 
-     *
-     * @return NodeList
-     */
-    public function siblingsXPath($xpath = null) {
-        $results = $this->collection()->reduce(function($carry, $node) use ($xpath) {
-            return $carry->merge(
-                $node->prevAllXPath($xpath)->merge(
-                    $node->nextAllXPath($xpath)
+                $node->precedingAll($selector)->merge(
+                    $node->followingAll($selector)
                 )
             );
         }, $this->newNodeList());

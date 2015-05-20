@@ -2,7 +2,7 @@
 
 namespace DOMWrap\Traits;
 
-use DOMWrap\Collections\NodeList;
+use DOMWrap\NodeList;
 
 /**
  * Node Trait

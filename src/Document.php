@@ -2,7 +2,6 @@
 
 namespace DOMWrap;
 
-use DOMWrap\Collections\NodeList;
 use DOMWrap\Traits\TraversalTrait;
 use DOMWrap\Traits\ManipulationTrait;
 

@@ -57,7 +57,7 @@ class WrapAllTest extends \PHPUnit_Framework_TestCase
     public function testWrapAllNodeListFromNodeList() {
         $expected = $this->document('<html><em><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></em></html>');
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
-        $nodeList = new \DOMWrap\Collections\NodeList($doc);
+        $nodeList = new \DOMWrap\NodeList($doc);
         $nodeList[] = new \DOMWrap\Element('em');
         $nodeList[] = new \DOMWrap\Element('strong');
         $doc->find('section')->wrapAll($nodeList);
