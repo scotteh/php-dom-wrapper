@@ -73,8 +73,8 @@ require('vendor/autoload.php');
 
 ###Traversal
 
-| Method | Implemented |
-|--------|-------------|
+| Method | Implemented | Method Name *(if different)* |
+|--------|-------------|------------------------------|
 | add          | No |
 | addBack      | No |
 | andSelf      | No |
@@ -89,15 +89,15 @@ require('vendor/autoload.php');
 | is           | **Yes** |
 | last         | **Yes** |
 | map          | **Yes** |
-| next         | **Yes** |
-| nextAll      | **Yes** |
+| next         | **Yes** | *following* |
+| nextAll      | **Yes** | *followingAll* |
 | nextUntil    | No |
 | not          | No |
 | parent       | **Yes** |
 | parents      | **Yes** |
 | parentsUntil | No |
-| prev         | **Yes** |
-| prevAll      | **Yes** |
+| prev         | **Yes** | *preceding* |
+| prevAll      | **Yes** | *precedingAll* |
 | prevUntil    | No |
 | siblings     | **Yes** |
 | slice        | **Yes** |
