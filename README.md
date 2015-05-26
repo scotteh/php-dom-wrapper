@@ -79,8 +79,8 @@ require('vendor/autoload.php');
 | addBack      | No |
 | andSelf      | No |
 | children     | **Yes** |
-| closest      | No |
-| contents     | No |
+| closest      | **Yes** |
+| contents     | **Yes** |
 | eq           | **Yes** |
 | filter       | **Yes** |
 | find         | **Yes** |
@@ -92,7 +92,7 @@ require('vendor/autoload.php');
 | next         | **Yes** | *following* |
 | nextAll      | **Yes** | *followingAll* |
 | nextUntil    | No |
-| not          | No |
+| not          | **Yes** |
 | parent       | **Yes** |
 | parents      | **Yes** |
 | parentsUntil | No |

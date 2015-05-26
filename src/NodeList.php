@@ -100,6 +100,13 @@ class NodeList extends NodeCollection
     }
 
     /**
+     * @return mixed
+     */
+    public function end() {
+        return end($this->nodes);
+    }
+
+    /**
      * @param int $key
      *
      * @return mixed

@@ -194,7 +194,7 @@ trait TraversalTrait
     public function children() {
         $results = $this->collection()->reduce(function($carry, $node) {
             return $carry->merge(
-                $node->newNodeList($node->childNodes)
+                $node->findXPath('child::*')
             );
         }, $this->newNodeList());
 
@@ -280,5 +280,46 @@ trait TraversalTrait
         }]));
 
         return array_shift($diff);
+    }
+
+    /**
+     * @param string $selector
+     *
+     * @return \DOMNode
+     */
+    public function closest($selector) {
+        return $this->findXPath(CssSelector::toXPath($selector, 'ancestor::') . '[1]')->first();
+    }
+
+    /**
+     * NodeList is only array like. Removing items using foreach() has undesired results.
+     *
+     * @return NodeList
+     */
+    public function contents() {
+        $results = $this->collection()->reduce(function($carry, $node) {
+            return $carry->merge(
+                $node->newNodeList($node->childNodes)
+            );
+        }, $this->newNodeList());
+
+        return $results;
+    }
+
+    /**
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    public function not($selector) {
+        $results = $this->collection()->reduce(function($carry, $node) use($selector) {
+            $nodeList = $this->findXPath(CssSelector::toXPath($selector, 'self::'));
+
+            if (!$nodeList->count()) {
+                $carry[] = $node;
+            }
+        }, $this->newNodeList());
+
+        return $results;
     }
 }

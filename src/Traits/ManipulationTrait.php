@@ -230,7 +230,7 @@ trait ManipulationTrait
             $newNodes = $this->inputAsNodeList($input);
 
             foreach ($newNodes as $newNode) {
-                $node->insertBefore($newNode, $node->children()->first());
+                $node->insertBefore($newNode, $node->contents()->first());
             }
         });
 
@@ -267,7 +267,7 @@ trait ManipulationTrait
         $this->collection()->each(function($node) use($input) {
             $newNodes = $this->inputAsNodeList($input);
 
-            $node->children()->remove();
+            $node->contents()->remove();
 
             foreach ($newNodes as $newNode) {
                 $node->appendChild($newNode);
@@ -282,7 +282,7 @@ trait ManipulationTrait
      */
     public function _empty() {
         $this->collection()->each(function($node) {
-            $node->children()->remove();
+            $node->contents()->remove();
         });
 
         return $this;
@@ -462,7 +462,7 @@ trait ManipulationTrait
             $stack->push($node);
 
             // Get the first element child node
-            $node = $node->children()->filterXPath('self::*')->first();
+            $node = $node->children()->first();
         } while ($node instanceof Element);
 
         // Get the top most node.
@@ -500,7 +500,7 @@ trait ManipulationTrait
                 // Pre-process wrapper into a stack of first element nodes.
                 $stackNodes = $this->_prepareWrapStack($inputNode);
 
-                foreach ($node->children() as $child) {
+                foreach ($node->contents() as $child) {
                     // Remove child from the current node
                     $oldChild = $node->removeChild($child);
 
@@ -561,7 +561,7 @@ trait ManipulationTrait
         $newNodeList = $this->newNodeList();
 
         // Loop through children of the common parent
-        foreach ($parentNode->children() as $childNode) {
+        foreach ($parentNode->contents() as $childNode) {
             $childNodeExists = $nodeList->exists($childNode);
 
             // Find the starting point
@@ -665,7 +665,7 @@ trait ManipulationTrait
             $parent = $node->parent();
 
             // Replace parent node (the one we're unwrapping) with it's children.
-            $parent->children()->each(function($childNode) use($parent) {
+            $parent->contents()->each(function($childNode) use($parent) {
                 $oldChildNode = $parent->removeChild($childNode);
 
                 $parent->before($oldChildNode);
