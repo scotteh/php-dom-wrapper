@@ -103,7 +103,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|\DOMNode $selector
+     * @param string|NodeList|\DOMNode $input
      *
      * @return bool
      */
@@ -246,7 +246,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
      *
      * @return NodeList
      */

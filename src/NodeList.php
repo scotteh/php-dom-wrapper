@@ -221,7 +221,7 @@ class NodeList extends NodeCollection
      * @return self
      */
     public function push(\DOMNode $node) {
-        return $this->nodes[] = $node;
+        $this->nodes[] = $node;
 
         return $this;
     }

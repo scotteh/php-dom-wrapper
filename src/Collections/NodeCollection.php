@@ -16,7 +16,7 @@ use Traversable;
  */
 class NodeCollection implements Countable, ArrayAccess, RecursiveIterator
 {
-    /** @var array */
+    /** @var array|\Traversable */
     protected $nodes = [];
 
     /**
