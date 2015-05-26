@@ -23,6 +23,9 @@ trait TraversalTrait
     /** @see Document::result(), NodeTrait::result() */
     abstract public function result($nodeList);
 
+    /** @see ManipulationTrait::inputAsNodeList() */
+    abstract public function inputAsNodeList($input);
+
     /**
      * @param Traversable|array $nodes
      *
@@ -100,14 +103,28 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector
+     * @param string|\DOMNode $selector
      *
      * @return bool
      */
-    public function is($selector) {
-        $nodes = $this->find($selector, 'self::');
+    public function is($input) {
+        if (is_string($input)) {
+            $inputNodes = $this->find($input, 'self::');
 
-        return $nodes->count() != 0;
+            return $inputNodes->count() != 0;
+        } else {
+            $inputNodes = $this->inputAsNodeList($input);
+
+            return $inputNodes->reduce(function($carry, $inputNode) {
+                foreach ($this->collection() as $node) {
+                    if ($node === $inputNode) {
+                        return true;
+                    }
+
+                    return $carry;
+                }
+            }, false);
+        }
     }
 
     /**
@@ -229,34 +246,63 @@ trait TraversalTrait
     }
 
     /**
-     * @param int $start
-     * @param int $end
+     * @param string|NodeList|\DOMNode $input
      *
      * @return NodeList
      */
-    public function slice($start, $end = null) {
-        $nodeList = array_slice($this->collection()->toArray(), $start, $end);
-
-        return $this->newNodeList($nodeList);
+    public function parents($selector = null) {
+        return $this->parentsUntil(null, $selector);
     }
 
     /**
+     * @param array $parentLists
+     *
      * @return NodeList
      */
-    public function parents() {
-        $parents = $this->newNodeList();
+    protected function _uniqueParents($parentLists) {
+        $results = $this->newNodeList();
 
-        $this->collection()->each(function($node) use($parents) {
+        foreach ($parentLists as $parentList) {
+            foreach ($parentList as $parentNode) {
+                if (!$results->exists($parentNode)) {
+                    $results[] = $parentNode;
+                }
+            }
+        }
+
+        return $results->reverse();
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    public function parentsUntil($input = null, $selector = null) {
+        $parentLists = [];
+
+        $this->collection()->each(function($node) use($input, $selector, &$parentLists) {
+            $parentNodes = $this->newNodeList();
+
             $parent = $node->parent();
 
             while ($parent instanceof Element) {
-                $parents[] = $parent;
+                if (is_null($selector) || $parent->is($selector)) {
+                    $parentNodes[] = $parent;
+                }
+
+                if (!is_null($input) && $parent->is($input)) {
+                    break;
+                }
 
                 $parent = $parent->parent();
             }
+
+            $parentLists[] = $parentNodes;
         });
 
-        return $parents->reverse();
+        return $this->_uniqueParents($parentLists);
     }
 
     /**
@@ -319,6 +365,21 @@ trait TraversalTrait
                 $carry[] = $node;
             }
         }, $this->newNodeList());
+
+        return $results;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    public function add($input) {
+        $nodes = $this->inputAsNodeList($input);
+
+        $results = $this->collection()->merge(
+            $nodes
+        );
 
         return $results;
     }

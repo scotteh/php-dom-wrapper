@@ -204,14 +204,15 @@ class NodeList extends NodeCollection
     }
 
     /**
-     * @param \DOMNode $node
+     * @param int $start
+     * @param int $end
      *
-     * @return self
+     * @return NodeList
      */
-    public function add(\DOMNode $node) {
-        $this->nodes[] = $node;
+    public function slice($start, $end = null) {
+        $nodeList = array_slice($this->toArray(), $start, $end);
 
-        return $this;
+        return $this->newNodeList($nodeList);
     }
 
     /**
@@ -220,7 +221,9 @@ class NodeList extends NodeCollection
      * @return self
      */
     public function push(\DOMNode $node) {
-        return $this->add($node);
+        return $this->nodes[] = $node;
+
+        return $this;
     }
 
     /**

@@ -75,9 +75,7 @@ require('vendor/autoload.php');
 
 | Method | Implemented | Method Name *(if different)* |
 |--------|-------------|------------------------------|
-| add          | No |
-| addBack      | No |
-| andSelf      | No |
+| add          | **Yes** |
 | children     | **Yes** |
 | closest      | **Yes** |
 | contents     | **Yes** |
@@ -95,7 +93,7 @@ require('vendor/autoload.php');
 | not          | **Yes** |
 | parent       | **Yes** |
 | parents      | **Yes** |
-| parentsUntil | No |
+| parentsUntil | **Yes** |
 | prev         | **Yes** | *preceding* |
 | prevAll      | **Yes** | *precedingAll* |
 | prevUntil    | No |
