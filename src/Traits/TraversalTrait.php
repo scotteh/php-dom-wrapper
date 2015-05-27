@@ -139,12 +139,46 @@ trait TraversalTrait
     }
 
     /**
+     * @param string $selector
+     *
+     * @return \DOMNode|null
+     */
+    public function preceding($selector = null) {
+        $result = $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::') . '[1]');
+
+        if (!$result->count()) {
+            return null;
+        }
+
+        return $result->first();
+    }
+
+    /**
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    public function precedingAll($selector = null) {
+        return $this->precedingUntil(null, $selector);
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    public function precedingUntil($input = null, $selector = null) {
+        return $this->_walkPathUntil('previousSibling', $input, $selector);
+    }
+
+    /**
      * @param string $selector 
      *
      * @return \DOMNode|null
      */
-    public function preceding($selector = '') {
-        $result = $this->precedingAll($selector, '[1]');
+    public function following($selector = null) {
+        $result = $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::') . '[1]');
 
         if (!$result->count()) {
             return null;
@@ -158,32 +192,18 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function precedingAll($selector = '', $postfix = '') {
-        return $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::') . $postfix);
+    public function followingAll($selector = null) {
+        return $this->followingUntil(null, $selector);
     }
 
     /**
-     * @param string $selector 
-     *
-     * @return \DOMNode|null
-     */
-    public function following($selector = '') {
-        $result = $this->followingAll($selector, '[1]');
-
-        if (!$result->count()) {
-            return null;
-        }
-
-        return $result->first();
-    }
-
-    /**
-     * @param string $selector 
+     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
      *
      * @return NodeList
      */
-    public function followingAll($selector = '', $postfix = '') {
-        return $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::') . $postfix);
+    public function followingUntil($input = null, $selector = null) {
+        return $this->_walkPathUntil('nextSibling', $input, $selector);
     }
 
     /**
@@ -255,54 +275,13 @@ trait TraversalTrait
     }
 
     /**
-     * @param array $parentLists
-     *
-     * @return NodeList
-     */
-    protected function _uniqueParents($parentLists) {
-        $results = $this->newNodeList();
-
-        foreach ($parentLists as $parentList) {
-            foreach ($parentList as $parentNode) {
-                if (!$results->exists($parentNode)) {
-                    $results[] = $parentNode;
-                }
-            }
-        }
-
-        return $results->reverse();
-    }
-
-    /**
      * @param string|NodeList|\DOMNode $input
      * @param string $selector
      *
      * @return NodeList
      */
     public function parentsUntil($input = null, $selector = null) {
-        $parentLists = [];
-
-        $this->collection()->each(function($node) use($input, $selector, &$parentLists) {
-            $parentNodes = $this->newNodeList();
-
-            $parent = $node->parent();
-
-            while ($parent instanceof Element) {
-                if (is_null($selector) || $parent->is($selector)) {
-                    $parentNodes[] = $parent;
-                }
-
-                if (!is_null($input) && $parent->is($input)) {
-                    break;
-                }
-
-                $parent = $parent->parent();
-            }
-
-            $parentLists[] = $parentNodes;
-        });
-
-        return $this->_uniqueParents($parentLists);
+        return $this->_walkPathUntil('parentNode', $input, $selector);
     }
 
     /**
@@ -382,5 +361,80 @@ trait TraversalTrait
         );
 
         return $results;
+    }
+
+    /**
+     * @param \DOMNode $baseNode
+     * @param string $property
+     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    protected function _buildNodeListUntil($baseNode, $property, $input = null, $selector = null) {
+        $resultNodes = $this->newNodeList();
+
+        // Get our first node
+        $node = $baseNode->$property;
+
+        // Keep looping until we're either out of nodes, or at the root of the DOM.
+        while ($node instanceof \DOMNode &&
+               !($node instanceof \DOMDocument))
+        {
+            // Filter nodes
+            if (is_null($selector) || $node->is($selector)) {
+                $resultNodes[] = $node;
+            }
+
+            // 'Until' check
+            if (!is_null($input) && $node->is($input)) {
+                break;
+            }
+
+            // Find the next node
+            $node = $node->$property;
+        }
+
+        return $resultNodes;
+    }
+
+    /**
+     * @param array $nodeLists
+     *
+     * @return NodeList
+     */
+    protected function _uniqueNodes($nodeLists) {
+        $resultNodes = $this->newNodeList();
+
+        // Loop through our array of NodeLists
+        foreach ($nodeLists as $nodeList) {
+            // Each node in the NodeList
+            foreach ($nodeList as $node) {
+                // We're only interested in unique nodes
+                if (!$resultNodes->exists($node)) {
+                    $resultNodes[] = $node;
+                }
+            }
+        }
+
+        // Sort resulting NodeList: outer-most => inner-most.
+        return $resultNodes->reverse();
+    }
+
+    /**
+     * @param string $property
+     * @param string|NodeList|\DOMNode $input
+     * @param string $selector
+     *
+     * @return NodeList
+     */
+    protected function _walkPathUntil($property, $input = null, $selector = null) {
+        $nodeLists = [];
+
+        $this->collection()->each(function($node) use($property, $input, $selector, &$nodeLists) {
+            $nodeLists[] = $this->_buildNodeListUntil($node, $property, $input, $selector);
+        });
+
+        return $this->_uniqueNodes($nodeLists);
     }
 }

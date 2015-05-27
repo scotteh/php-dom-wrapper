@@ -89,14 +89,14 @@ require('vendor/autoload.php');
 | map          | **Yes** |
 | next         | **Yes** | *following* |
 | nextAll      | **Yes** | *followingAll* |
-| nextUntil    | No |
+| nextUntil    | **Yes** | *followingUntil* |
 | not          | **Yes** |
 | parent       | **Yes** |
 | parents      | **Yes** |
 | parentsUntil | **Yes** |
 | prev         | **Yes** | *preceding* |
 | prevAll      | **Yes** | *precedingAll* |
-| prevUntil    | No |
+| prevUntil    | **Yes** | *precedingUntil* |
 | siblings     | **Yes** |
 | slice        | **Yes** |
 
