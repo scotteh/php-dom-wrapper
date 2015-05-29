@@ -89,21 +89,21 @@ class NodeList extends NodeCollection
      * @return mixed
      */
     public function first() {
-        return $this->rewind();
+        return !empty($this->nodes) ? $this->rewind() : null;
     }
 
     /**
      * @return mixed
      */
     public function last() {
-        return end($this->nodes);
+        return $this->end();
     }
 
     /**
      * @return mixed
      */
     public function end() {
-        return end($this->nodes);
+        return !empty($this->nodes) ? end($this->nodes) : null;
     }
 
     /**

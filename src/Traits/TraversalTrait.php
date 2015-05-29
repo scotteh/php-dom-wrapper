@@ -103,7 +103,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return bool
      */
@@ -112,6 +112,14 @@ trait TraversalTrait
             $inputNodes = $this->find($input, 'self::');
 
             return $inputNodes->count() != 0;
+        } else if ($input instanceof \Closure) {
+            return $this->collection()->reduce(function($carry, $node) use ($input) {
+                if ($input($node)) {
+                    return true;
+                }
+
+                return $carry;
+            }, false);
         } else {
             $inputNodes = $this->inputAsNodeList($input);
 
@@ -139,22 +147,16 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return \DOMNode|null
      */
     public function preceding($selector = null) {
-        $result = $this->findXPath(CssSelector::toXPath($selector, 'preceding-sibling::') . '[1]');
-
-        if (!$result->count()) {
-            return null;
-        }
-
-        return $result->first();
+        return $this->precedingUntil(null, $selector)->first();
     }
 
     /**
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
@@ -164,7 +166,7 @@ trait TraversalTrait
 
     /**
      * @param string|NodeList|\DOMNode $input
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
@@ -173,22 +175,16 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector 
+     * @param string|NodeList|\DOMNode|\Closure $selector 
      *
      * @return \DOMNode|null
      */
     public function following($selector = null) {
-        $result = $this->findXPath(CssSelector::toXPath($selector, 'following-sibling::') . '[1]');
-
-        if (!$result->count()) {
-            return null;
-        }
-
-        return $result->first();
+        return $this->followingUntil(null, $selector)->first();
     }
 
     /**
-     * @param string $selector 
+     * @param string|NodeList|\DOMNode|\Closure $selector 
      *
      * @return NodeList
      */
@@ -198,7 +194,7 @@ trait TraversalTrait
 
     /**
      * @param string|NodeList|\DOMNode $input
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
@@ -207,7 +203,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|null $selector 
+     * @param string|NodeList|\DOMNode|\Closure $selector 
      *
      * @return NodeList
      */
