@@ -1,4 +1,5 @@
 #PHP DOM Wrapper
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/?branch=master) [![Build Status](https://travis-ci.org/scotteh/php-dom-wrapper.svg?branch=master)](https://travis-ci.org/scotteh/php-dom-wrapper)
 
 ##Intro
 
