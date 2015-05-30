@@ -85,10 +85,6 @@ class Document extends \DOMDocument
      * {@inheritdoc}
      */
     public function setHtml($html) {
-        if (trim($html) === '') {
-            return $this;
-        }
-
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
