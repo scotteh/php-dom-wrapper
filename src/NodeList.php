@@ -3,6 +3,7 @@
 namespace DOMWrap;
 
 use DOMWrap\Document;
+use DOMWrap\Traits\CommonTrait;
 use DOMWrap\Traits\TraversalTrait;
 use DOMWrap\Traits\ManipulationTrait;
 use DOMWrap\Collections\NodeCollection;
@@ -15,6 +16,7 @@ use DOMWrap\Collections\NodeCollection;
  */
 class NodeList extends NodeCollection
 {
+    use CommonTrait;
     use TraversalTrait;
     use ManipulationTrait {
         ManipulationTrait::__call as __manipulationCall;
@@ -54,23 +56,21 @@ class NodeList extends NodeCollection
     }
 
     /**
-     * @return self
+     * {@inheritdoc}
      */
     public function collection() {
         return $this;
     }
 
     /**
-     * @return \DOMDocument
+     * {@inheritdoc}
      */
     public function document() {
         return $this->document;
     }
 
     /**
-     * @param NodeList $nodeList
-     *
-     * @return NodeList
+     * {@inheritdoc}
      */
     public function result($nodeList) {
         return $nodeList;
@@ -133,8 +133,8 @@ class NodeList extends NodeCollection
      * @return self
      */
     public function each(\Closure $function) {
-        foreach ($this->nodes as $node) {
-            $result = $function($node);
+        foreach ($this->nodes as $index => $node) {
+            $result = $function($node, $index);
 
             if ($result === false) {
                 break;

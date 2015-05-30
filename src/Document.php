@@ -2,6 +2,7 @@
 
 namespace DOMWrap;
 
+use DOMWrap\Traits\CommonTrait;
 use DOMWrap\Traits\TraversalTrait;
 use DOMWrap\Traits\ManipulationTrait;
 
@@ -13,6 +14,7 @@ use DOMWrap\Traits\ManipulationTrait;
  */
 class Document extends \DOMDocument
 {
+    use CommonTrait;
     use TraversalTrait;
     use ManipulationTrait;
 
@@ -25,25 +27,21 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @see TraversalTrait::document()
-     *
-     * @return Document
+     * {@inheritdoc}
      */
     public function document() {
         return $this;
     }
 
     /**
-     * @return NodeList
+     * {@inheritdoc}
      */
     public function collection() {
         return $this->newNodeList([$this]);
     }
 
     /**
-     * @param NodeList $nodeList
-     *
-     * @return \DOMNode
+     * {@inheritdoc}
      */
     public function result($nodeList) {
         if ($nodeList->count()) {
@@ -54,29 +52,21 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @see TraversalTrait::parent()
-     *
-     * @return Element
+     * {@inheritdoc}
      */
     public function parent() {
         return null;
     }
 
     /**
-     * @see TraversalTrait::parents()
-     *
-     * @return NodeList
+     * {@inheritdoc}
      */
     public function parents() {
         return $this->newNodeList();
     }
 
     /**
-     * @see TraversalTrait::replaceWith()
-     *
-     * @param \DOMNode $newNode
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function replaceWith($newNode) {
         $this->replaceChild($newNode, $this);
@@ -85,11 +75,16 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @param string $html
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function html($html, $options = 0) {
+    public function getHtml() {
+        return $this->getOuterHtml();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHtml($html) {
         if (trim($html) === '') {
             return $this;
         }
@@ -97,21 +92,13 @@ class Document extends \DOMDocument
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
-        $fn = function($matches) {
-            return (
-                isset($matches[1])
-                ? '</script> -->'
-                : '<!-- <script>'
-            );
-        };
-
-        $html = preg_replace_callback('@<([/])?script[^>]*>@Ui', $fn, $html);
-
-        if (mb_detect_encoding($html, mb_detect_order(), true) === 'UTF-8') {
-            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        if (mb_detect_encoding($html, mb_detect_order(), true) !== 'UTF-8') {
+            $html = mb_convert_encoding($html, 'UTF-8', 'auto');
         }
 
-        $this->loadHTML($html, $options);
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+        $this->loadHTML($html);
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);

@@ -18,20 +18,20 @@ define('DOM_NODE_TEXT_NORMALISED', 2);
  */
 trait ManipulationTrait
 {
+    /** @see CommonTrait::collection() */
+    abstract public function collection();
+
+    /** @see CommonTrait::document() */
+    abstract public function document();
+
+    /** @see CommonTrait::result() */
+    abstract public function result($nodeList);
+
     /** @see TraversalTrait::find() */
     abstract public function find($selector, $prefix = 'descendant::');
 
     /** @see TraversalTrait::findXPath() */
     abstract public function findXPath($xpath);
-
-    /** @see Document::collection(), NodeTrait::collection() */
-    abstract public function collection();
-
-    /** @see Document::document(), NodeTrait::document() */
-    abstract public function document();
-
-    /** @see Document::result(), NodeTrait::result() */
-    abstract public function result($nodeList);
 
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
@@ -255,29 +255,6 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
-     *
-     * @return self
-     */
-    public function html($input) {
-        if (trim($input) === '') {
-            return $this;
-        }
-
-        $this->collection()->each(function($node) use($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
-            $node->contents()->remove();
-
-            foreach ($newNodes as $newNode) {
-                $node->appendChild($newNode);
-            }
-        });
-
-        return $this;
-    }
-
-    /**
      * @return self
      */
     public function _empty() {
@@ -323,7 +300,7 @@ trait ManipulationTrait
      *
      * @return string|null
      */
-    protected function _getAttr($name) {
+    public function getAttr($name) {
         $node = $this->collection()->first();
 
         if (!($node instanceof \DOMElement)) {
@@ -347,7 +324,7 @@ trait ManipulationTrait
      *
      * @return self
      */
-    protected function _setAttr($name, $value) {
+    public function setAttr($name, $value) {
         $this->collection()->each(function($node) use($name, $value) {
             if ($node instanceof \DOMElement) {
                 $node->setAttribute($name, $value);
@@ -365,9 +342,9 @@ trait ManipulationTrait
      */
     public function attr($name, $value = null) {
         if (is_null($value)) {
-            return $this->_getAttr($name);
+            return $this->getAttr($name);
         } else {
-            return $this->_setAttr($name, $value);
+            return $this->setAttr($name, $value);
         }
     }
 
@@ -436,7 +413,7 @@ trait ManipulationTrait
      * @return bool
      */
     public function hasClass($class) {
-        $attr = $this->_getAttr('class');
+        $attr = $this->getAttr('class');
 
         $exists = array_reduce(explode(' ', $attr), function($carry, $item) use($class) {
             if ($carry || strcasecmp($item, $class) == 0) {
@@ -675,5 +652,61 @@ trait ManipulationTrait
         });
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOuterHtml() {
+        return $this->document()->saveHTML(
+            $this->collection()->first()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtml() {
+        return $this->collection()->first()->children()->reduce(function($carry, $node) {
+            return $carry . $this->document()->saveHTML($node);
+        });
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
+     *
+     * @return self
+     */
+    public function setHtml($input) {
+        $this->collection()->each(function($node, $index) use ($input) {
+            $html = $input;
+
+            if ($input instanceof \Closure) {
+                $html = $input($node, $index);
+            }
+
+            $newNodes = $this->inputAsNodeList($html);
+
+            // Remove old contents from the current node.
+            $node->contents()->remove();
+
+            // Add new contents in it's place.
+            $node->append($newNodes);
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
+     *
+     * @return self
+     */
+    public function html($input = null) {
+        if (is_null($input)) {
+            return $this->getHtml();
+        } else {
+            return $this->setHtml($input);
+        }
     }
 }

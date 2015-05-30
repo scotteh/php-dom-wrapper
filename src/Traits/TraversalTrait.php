@@ -14,13 +14,13 @@ use Symfony\Component\CssSelector\CssSelector;
  */
 trait TraversalTrait
 {
-    /** @see Document::collection(), NodeTrait::collection() */
+    /** @see CommonTrait::collection() */
     abstract public function collection();
 
-    /** @see Document::document(), NodeTrait::document() */
+    /** @see CommonTrait::document() */
     abstract public function document();
 
-    /** @see Document::result(), NodeTrait::result() */
+    /** @see CommonTrait::result() */
     abstract public function result($nodeList);
 
     /** @see ManipulationTrait::inputAsNodeList() */
