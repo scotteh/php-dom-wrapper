@@ -104,46 +104,66 @@ trait TraversalTrait
 
     /**
      * @param string|NodeList|\DOMNode|\Closure $input
+     * @param bool $matchType
+     *
+     * @return NodeList
+     */
+    protected function getNodesMatchingInput($input, $matchType = true) {
+        if ($input instanceof NodeList || $input instanceof \DOMNode) {
+            $inputNodes = $this->inputAsNodeList($input);
+
+            $fn = function($node) use ($inputNodes) {
+                return $inputNodes->exists($node);
+            };
+
+        } elseif ($input instanceof \Closure) {
+            // Since we're at the behest of the input \Closure, the 'matched'
+            //  return value is always true.
+            $matchType = true;
+
+            $fn = $input;
+
+        } else {
+            $fn = function($node) use ($input) {
+                return $node->find($input, 'self::')->count() != 0;
+            };
+        }
+
+        // Build a list of matching nodes.
+        return $this->collection()->map(function($node) use ($fn, $matchType) {
+            if ($fn($node) !== $matchType) {
+                return null;
+            }
+
+            return $node;
+        });
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return bool
      */
     public function is($input) {
-        if (is_string($input)) {
-            $inputNodes = $this->find($input, 'self::');
-
-            return $inputNodes->count() != 0;
-        } else if ($input instanceof \Closure) {
-            return $this->collection()->reduce(function($carry, $node) use ($input) {
-                if ($input($node)) {
-                    return true;
-                }
-
-                return $carry;
-            }, false);
-        } else {
-            $inputNodes = $this->inputAsNodeList($input);
-
-            return $inputNodes->reduce(function($carry, $inputNode) {
-                foreach ($this->collection() as $node) {
-                    if ($node === $inputNode) {
-                        return true;
-                    }
-
-                    return $carry;
-                }
-            }, false);
-        }
+        return $this->getNodesMatchingInput($input)->count() != 0;
     }
 
     /**
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
-     * @return bool
+     * @return NodeList
      */
-    public function has($selector) {
-        $nodes = $this->find($selector);
+    public function has($input) {
+        return $this->getNodesMatchingInput($input);
+    }
 
-        return $nodes->count() != 0;
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
+     *
+     * @return NodeList
+     */
+    public function not($input) {
+        return $this->getNodesMatchingInput($input, false);
     }
 
     /**
@@ -322,23 +342,6 @@ trait TraversalTrait
             return $carry->merge(
                 $node->newNodeList($node->childNodes)
             );
-        }, $this->newNodeList());
-
-        return $results;
-    }
-
-    /**
-     * @param string $selector
-     *
-     * @return NodeList
-     */
-    public function not($selector) {
-        $results = $this->collection()->reduce(function($carry, $node) use($selector) {
-            $nodeList = $this->findXPath(CssSelector::toXPath($selector, 'self::'));
-
-            if (!$nodeList->count()) {
-                $carry[] = $node;
-            }
         }, $this->newNodeList());
 
         return $results;
