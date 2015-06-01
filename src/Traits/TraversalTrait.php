@@ -97,6 +97,7 @@ trait TraversalTrait
             $fn = function($node) use ($input) {
                 return $node->find($input, 'self::')->count() != 0;
             };
+
         } else {
             throw new \InvalidArgumentException('Unexpected input value of type "' . gettype($input) . '"');
         }
@@ -139,17 +140,6 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $xpath
-     *
-     * @return NodeList
-     */
-    public function filterXPath($xpath) {
-        return $this->getNodesMatchingInput(function($node) use ($xpath) {
-            return $node->findXPath($xpath)->count() != 1;
-        });
-    }
-
-    /**
      * @param string|NodeList|\DOMNode $input
      *
      * @return NodeList
@@ -171,10 +161,12 @@ trait TraversalTrait
                     return $carry;
                 }, false);
             };
+
         } elseif (is_string($input)) {
             $fn = function($node) use ($input) {
                 return $node->find($input, 'descendant::')->count() != 0;
             };
+
         } else {
             throw new \InvalidArgumentException('Unexpected input value of type "' . gettype($input) . '"');
         }

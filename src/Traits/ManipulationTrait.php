@@ -92,7 +92,7 @@ trait ManipulationTrait
     protected function inputAsFirstNode($input) {
         $nodes = $this->inputAsNodeList($input);
 
-        return $nodes->filterXPath('self::*')->first();
+        return $nodes->findXPath('self::*')->first();
     }
 
     /**
