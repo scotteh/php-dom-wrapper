@@ -150,17 +150,17 @@ class NodeList extends NodeCollection
      * @return NodeList
      */
     public function map(\Closure $function) {
-        $results = [];
+        $nodes = $this->newNodeList();
 
         foreach ($this->nodes as $node) {
             $result = $function($node);
 
             if (!is_null($result) && $result !== false) {
-                $results[] = $result;
+                $nodes[] = $result;
             }
         }
 
-        return $this->newNodeList($results);
+        return $nodes;
     }
 
     /**
