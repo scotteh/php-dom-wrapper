@@ -73,36 +73,6 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector
-     *
-     * @return NodeList
-     */
-    public function filter($selector) {
-        return $this->collection()->map(function($obj) use($selector) {
-            if (!$obj->is($selector)) {
-                return null;
-            }
-
-            return $obj;
-        });
-    }
-
-    /**
-     * @param string $xpath
-     *
-     * @return NodeList
-     */
-    public function filterXPath($xpath) {
-        return $this->collection()->map(function($obj) use($xpath) {
-            if ($obj->findXPath($xpath)->count() == 0) {
-                return null;
-            }
-
-            return $obj;
-        });
-    }
-
-    /**
      * @param string|NodeList|\DOMNode|\Closure $input
      * @param bool $matchType
      *
@@ -123,10 +93,12 @@ trait TraversalTrait
 
             $fn = $input;
 
-        } else {
+        } elseif (is_string($input)) {
             $fn = function($node) use ($input) {
                 return $node->find($input, 'self::')->count() != 0;
             };
+        } else {
+            throw new \InvalidArgumentException('Unexpected input value of type "' . gettype($input) . '"');
         }
 
         // Build a list of matching nodes.
@@ -153,8 +125,8 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function has($input) {
-        return $this->getNodesMatchingInput($input);
+    public function not($input) {
+        return $this->getNodesMatchingInput($input, false);
     }
 
     /**
@@ -162,8 +134,52 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function not($input) {
-        return $this->getNodesMatchingInput($input, false);
+    public function filter($input) {
+        return $this->getNodesMatchingInput($input);
+    }
+
+    /**
+     * @param string $xpath
+     *
+     * @return NodeList
+     */
+    public function filterXPath($xpath) {
+        return $this->getNodesMatchingInput(function($node) use ($xpath) {
+            return $node->findXPath($xpath)->count() != 1;
+        });
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    public function has($input) {
+        if ($input instanceof NodeList || $input instanceof \DOMNode) {
+            $inputNodes = $this->inputAsNodeList($input);
+
+            $fn = function($node) use ($inputNodes) {
+                $descendantNodes = $node->find('*', 'descendant::');
+
+                // Determine if we have a descendant match.
+                return $inputNodes->reduce(function($carry, $inputNode) use ($descendantNodes) {
+                    // Match descendant nodes against input nodes.
+                    if ($descendantNodes->exists($inputNode)) {
+                        return true;
+                    }
+
+                    return $carry;
+                }, false);
+            };
+        } elseif (is_string($input)) {
+            $fn = function($node) use ($input) {
+                return $node->find($input, 'descendant::')->count() != 0;
+            };
+        } else {
+            throw new \InvalidArgumentException('Unexpected input value of type "' . gettype($input) . '"');
+        }
+
+        return $this->getNodesMatchingInput($fn);
     }
 
     /**
