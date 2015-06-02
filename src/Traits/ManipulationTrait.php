@@ -482,56 +482,59 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
-     *
-     * @return self
+     * @param string|NodeList|\DOMNode|\Closure $input
+     * @param \Closure $callback
      */
-    public function wrapInner($input) {
-        $this->collection()->each(function($node) use ($input) {
+    protected function wrapWithInputByCallback($input, \Closure $callback) {
+        $this->collection()->each(function($node) use ($input, $callback) {
             $inputNode = $this->inputAsFirstNode($input);
 
             if ($inputNode instanceof Element) {
                 // Pre-process wrapper into a stack of first element nodes.
                 $stackNodes = $this->_prepareWrapStack($inputNode);
 
-                foreach ($node->contents() as $child) {
-                    // Remove child from the current node
-                    $oldChild = $node->removeChild($child);
-
-                    // Add it back as a child of the top (leaf) node on the stack
-                    $stackNodes->top()->append($oldChild);
-                }
-
-                // Add the bottom (root) node on the stack
-                $node->append($stackNodes->bottom());
+                $callback($node, $stackNodes);
             }
+        });
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
+     *
+     * @return self
+     */
+    public function wrapInner($input) {
+        $this->wrapWithInputByCallback($input, function($node, $stackNodes) {
+            foreach ($node->contents() as $child) {
+                // Remove child from the current node
+                $oldChild = $node->removeChild($child);
+
+                // Add it back as a child of the top (leaf) node on the stack
+                $stackNodes->top()->append($oldChild);
+            }
+
+            // Add the bottom (root) node on the stack
+            $node->append($stackNodes->bottom());
         });
 
         return $this;
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function wrap($input) {
-        $this->collection()->each(function($node) use ($input) {
-            $inputNode = $this->inputAsFirstNode($input);
+        $this->wrapWithInputByCallback($input, function($node, $stackNodes) {
+            // Add the new bottom (root) node after the current node
+            $node->after($stackNodes->bottom());
 
-            if ($inputNode instanceof Element) {
-                // Pre-process wrapper into a stack of first element nodes.
-                $stackNodes = $this->_prepareWrapStack($inputNode);
+            // Remove the current node
+            $oldNode = $node->parent()->removeChild($node);
 
-                // Add the new bottom (root) node after the current node
-                $node->after($stackNodes->bottom());
-
-                // Remove the current node
-                $oldNode = $node->parent()->removeChild($node);
-
-                // Add the 'current node' back inside the new top (leaf) node.
-                $stackNodes->top()->append($oldNode);
-            }
+            // Add the 'current node' back inside the new top (leaf) node.
+            $stackNodes->top()->append($oldNode);
         });
 
         return $this;
