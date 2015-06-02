@@ -492,8 +492,14 @@ trait ManipulationTrait
      * @param \Closure $callback
      */
     protected function wrapWithInputByCallback($input, \Closure $callback) {
-        $this->collection()->each(function($node) use ($input, $callback) {
-            $inputNode = $this->inputAsFirstNode($input);
+        $this->collection()->each(function($node, $index) use ($input, $callback) {
+            $html = $input;
+
+            if ($input instanceof \Closure) {
+                $html = $input($node, $index);
+            }
+
+            $inputNode = $this->inputAsFirstNode($html);
 
             if ($inputNode instanceof Element) {
                 // Pre-process wrapper into a stack of first element nodes.
