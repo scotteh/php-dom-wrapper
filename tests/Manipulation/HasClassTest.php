@@ -38,14 +38,6 @@ class HasClassTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $hasClass);
     }
 
-    public function testHasClassNodeListFirstDoesntExists() {
-        $expected = false;
-        $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="dom test example"><span><em>testing 123..!</em></span></section></html>');
-        $hasClass = $doc->find('div, section')->hasClass('dom');
-
-        $this->assertSame($expected, $hasClass);
-    }
-
     public function testHasClassNodeListDoesntExist() {
         $expected = false;
         $doc = $this->document('<html><div class="test"><article><a href="http://example.org/">this is a test</a></article></div><section class="test"><span><em>testing 123..!</em></span></section></html>');

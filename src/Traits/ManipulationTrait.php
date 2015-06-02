@@ -428,17 +428,17 @@ trait ManipulationTrait
      * @return bool
      */
     public function hasClass($class) {
-        $attr = $this->getAttr('class');
+        return $this->collection()->reduce(function($carry, $node) use ($class) {
+            $attr = $node->getAttr('class');
 
-        $exists = array_reduce(explode(' ', $attr), function($carry, $item) use($class) {
-            if ($carry || strcasecmp($item, $class) == 0) {
-                return true;
-            }
+            return array_reduce(explode(' ', $attr), function($carry, $item) use ($class) {
+                if (strcasecmp($item, $class) == 0) {
+                    return true;
+                }
 
-            return false;
+                return $carry;
+            }, false);
         }, false);
-
-        return $exists;
     }
 
     /**
