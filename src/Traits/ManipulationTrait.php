@@ -110,7 +110,7 @@ trait ManipulationTrait
 
     /**
      * @param string|NodeList|\DOMNode|\Closure $input
-     * @param \Closure $fn
+     * @param \Closure $callback
      *
      * @return self
      */

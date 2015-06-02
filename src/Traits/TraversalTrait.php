@@ -378,7 +378,7 @@ trait TraversalTrait
      * @param \DOMNode $baseNode
      * @param string $property
      * @param string|NodeList|\DOMNode $input
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
@@ -435,7 +435,7 @@ trait TraversalTrait
     /**
      * @param string $property
      * @param string|NodeList|\DOMNode $input
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
