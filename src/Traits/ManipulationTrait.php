@@ -57,9 +57,9 @@ trait ManipulationTrait
     /**
      * @param string|NodeList|\DOMNode $input
      *
-     * @return NodeList
+     * @return array|NodeList|\Traversable
      */
-    protected function inputAsNodeList($input) {
+    protected function inputPrepareAsTraversable($input) {
         if ($input instanceof \DOMNode) {
             $nodes = [$input];
         } else if (is_string($input)) {
@@ -69,6 +69,17 @@ trait ManipulationTrait
         } else {
             throw new \InvalidArgumentException();
         }
+
+        return $nodes;
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    protected function inputAsNodeList($input) {
+        $nodes = $this->inputPrepareAsTraversable($input);
 
         $newNodes = $this->newNodeList();
 
