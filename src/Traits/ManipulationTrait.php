@@ -109,6 +109,28 @@ trait ManipulationTrait
     }
 
     /**
+     * @param string|NodeList|\DOMNode|\Closure $input
+     * @param \Closure $fn
+     *
+     * @return self
+     */
+    protected function manipulateNodesWithInput($input, \Closure $callback) {
+        $this->collection()->each(function($node, $index) use ($input, $callback) {
+            $html = $input;
+
+            if ($input instanceof \Closure) {
+                $html = $input($node, $index);
+            }
+
+            $newNodes = $this->inputAsNodeList($html);
+
+            $callback($node, $newNodes);
+        });
+
+        return $this;
+    }
+
+    /**
      * @param string|null $selector
      *
      * @return NodeList
@@ -145,20 +167,16 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function replaceWith($input) {
-        $this->collection()->each(function($node) use ($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
                 $node->parent()->replaceChild($newNode, $node);
             }
         });
-
-        return $this;
     }
 
     /**
@@ -183,31 +201,25 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function before($input) {
-        $this->collection()->each(function($node) use($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
                 $node->parent()->insertBefore($newNode, $node);
             }
         });
-
-        return $this;
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function after($input) {
-        $this->collection()->each(function($node) use($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
                 if (is_null($node->following())) {
                     $node->parent()->appendChild($newNode);
@@ -216,42 +228,32 @@ trait ManipulationTrait
                 }
             }
         });
-
-        return $this;
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function prepend($input) {
-        $this->collection()->each(function($node) use($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
                 $node->insertBefore($newNode, $node->contents()->first());
             }
         });
-
-        return $this;
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function append($input) {
-        $this->collection()->each(function($node) use($input) {
-            $newNodes = $this->inputAsNodeList($input);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
                 $node->appendChild($newNode);
             }
         });
-
-        return $this;
     }
 
     /**
@@ -693,23 +695,13 @@ trait ManipulationTrait
      * @return self
      */
     public function setHtml($input) {
-        $this->collection()->each(function($node, $index) use ($input) {
-            $html = $input;
-
-            if ($input instanceof \Closure) {
-                $html = $input($node, $index);
-            }
-
-            $newNodes = $this->inputAsNodeList($html);
-
+        return $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             // Remove old contents from the current node.
             $node->contents()->remove();
 
             // Add new contents in it's place.
             $node->append($newNodes);
         });
-
-        return $this;
     }
 
     /**

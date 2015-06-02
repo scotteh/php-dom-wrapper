@@ -35,4 +35,16 @@ class AppendTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
+
+    public function testAppendNodeClosure() {
+        $expected = $this->document('<html><article><div class="test">some test content<div class="inserted"></div></div></article><a class="test">some test content<div class="inserted"></div></a></html>');
+
+        $doc = $this->document('<html><article><div class="test">some test content</div></article><a class="test">some test content</a></html>');
+        $nodes = $doc->find('.test');
+        $nodes->append(function($node, $index) {
+            return '<div class="inserted"></div>';
+        });
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+    }
 }

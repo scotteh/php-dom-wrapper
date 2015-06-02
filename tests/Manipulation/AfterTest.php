@@ -35,4 +35,16 @@ class AfterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
+
+    public function testAfterNodeClosure() {
+        $expected = $this->document('<html><article><div class="test"></div><div class="inserted"></div></article><a class="test"></a><div class="inserted"></div></html>');
+
+        $doc = $this->document('<html><article><div class="test"></div></article><a class="test"></a></html>');
+        $nodes = $doc->find('.test');
+        $nodes->after(function($node, $index) {
+            return '<div class="inserted"></div>';
+        });
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+    }
 }
