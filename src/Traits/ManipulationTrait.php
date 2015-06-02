@@ -294,6 +294,21 @@ trait ManipulationTrait
     }
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttr($name) {
+        return $this->collection()->reduce(function($carry, $node) use ($name) {
+            if ($node->hasAttribute($name)) {
+                return true;
+            }
+
+            return $carry;
+        }, false);
+    }
+
+    /**
      * @internal
      *
      * @param string $name
