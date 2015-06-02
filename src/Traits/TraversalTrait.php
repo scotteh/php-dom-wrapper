@@ -140,7 +140,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return NodeList
      */
@@ -166,6 +166,9 @@ trait TraversalTrait
             $fn = function($node) use ($input) {
                 return $node->find($input, 'descendant::')->count() != 0;
             };
+
+        } elseif ($input instanceof \Closure) {
+            $fn = $input;
 
         } else {
             throw new \InvalidArgumentException('Unexpected input value of type "' . gettype($input) . '"');
@@ -193,7 +196,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
@@ -221,7 +224,7 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
@@ -263,19 +266,12 @@ trait TraversalTrait
     }
 
     /**
+     * @param string|NodeList|\DOMNode|\Closure $selector
+     *
      * @return Element|NodeList|null
      */
-    public function parent() {
-        $results = $this->collection()->reduce(function($carry, $node) {
-            // Don't try and ready parentNode property on \DOMDocument, it's already the top node.
-            if ($node instanceof \DOMDocument) {
-                return $carry;
-            }
-
-            return $carry->merge(
-                $node->newNodeList($node->parentNode)
-            );
-        }, $this->newNodeList());
+    public function parent($selector = null) {
+        $results = $this->_walkPathUntil('parentNode', null, $selector, self::$MATCH_TYPE_FIRST);
 
         return $this->result($results);
     }
@@ -303,8 +299,8 @@ trait TraversalTrait
     }
 
     /**
-     * @param string|NodeList|\DOMNode $input
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $input
+     * @param string|NodeList|\DOMNode|\Closure $selector
      *
      * @return NodeList
      */
@@ -336,12 +332,12 @@ trait TraversalTrait
     }
 
     /**
-     * @param string $selector
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return \DOMNode
      */
-    public function closest($selector) {
-        return $this->findXPath(CssSelector::toXPath($selector, 'ancestor::') . '[1]')->first();
+    public function closest($input) {
+        return $this->_walkPathUntil('parentNode', $input, null, self::$MATCH_TYPE_LAST);
     }
 
     /**
@@ -374,15 +370,22 @@ trait TraversalTrait
         return $results;
     }
 
+    /** @var int */
+    private static $MATCH_TYPE_FIRST = 1;
+
+    /** @var int */
+    private static $MATCH_TYPE_LAST = 2;
+
     /**
      * @param \DOMNode $baseNode
      * @param string $property
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      * @param string|NodeList|\DOMNode|\Closure $selector
+     * @param int $matchType
      *
      * @return NodeList
      */
-    protected function _buildNodeListUntil($baseNode, $property, $input = null, $selector = null) {
+    protected function _buildNodeListUntil($baseNode, $property, $input = null, $selector = null, $matchType = null) {
         $resultNodes = $this->newNodeList();
 
         // Get our first node
@@ -392,13 +395,18 @@ trait TraversalTrait
         while ($node instanceof \DOMNode &&
                !($node instanceof \DOMDocument))
         {
-            // Filter nodes
-            if (is_null($selector) || $node->is($selector)) {
+            // Filter nodes if not matching last
+            if ($matchType != self::$MATCH_TYPE_LAST && (is_null($selector) || $node->is($selector))) {
                 $resultNodes[] = $node;
             }
 
-            // 'Until' check
-            if (!is_null($input) && $node->is($input)) {
+            // 'Until' check or first match only
+            if ($matchType == self::$MATCH_TYPE_FIRST || (!is_null($input) && $node->is($input))) {
+                // Set last match
+                if ($matchType == self::$MATCH_TYPE_LAST) {
+                    $resultNodes[] = $node;
+                }
+
                 break;
             }
 
@@ -434,16 +442,17 @@ trait TraversalTrait
 
     /**
      * @param string $property
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      * @param string|NodeList|\DOMNode|\Closure $selector
+     * @param int $matchType
      *
      * @return NodeList
      */
-    protected function _walkPathUntil($property, $input = null, $selector = null) {
+    protected function _walkPathUntil($property, $input = null, $selector = null, $matchType = false) {
         $nodeLists = [];
 
-        $this->collection()->each(function($node) use($property, $input, $selector, &$nodeLists) {
-            $nodeLists[] = $this->_buildNodeListUntil($node, $property, $input, $selector);
+        $this->collection()->each(function($node) use($property, $input, $selector, $matchType, &$nodeLists) {
+            $nodeLists[] = $this->_buildNodeListUntil($node, $property, $input, $selector, $matchType);
         });
 
         return $this->_uniqueNodes($nodeLists);
