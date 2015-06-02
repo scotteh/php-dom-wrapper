@@ -286,6 +286,10 @@ trait TraversalTrait
      * @return \DOMNode|null
      */
     public function eq($index) {
+        if ($index < 0) {
+            $index = $this->collection()->count() + $index;
+        }
+
         return $this->collection()->offsetGet($index);
     }
 
