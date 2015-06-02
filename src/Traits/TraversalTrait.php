@@ -448,7 +448,7 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    protected function _walkPathUntil($property, $input = null, $selector = null, $matchType = false) {
+    protected function _walkPathUntil($property, $input = null, $selector = null, $matchType = null) {
         $nodeLists = [];
 
         $this->collection()->each(function($node) use($property, $input, $selector, $matchType, &$nodeLists) {
