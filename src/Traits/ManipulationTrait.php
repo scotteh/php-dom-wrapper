@@ -2,7 +2,6 @@
 
 namespace DOMWrap\Traits;
 
-use DOMWrap\Document;
 use DOMWrap\Element;
 use DOMWrap\NodeList;
 
