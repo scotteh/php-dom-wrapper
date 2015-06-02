@@ -334,10 +334,12 @@ trait TraversalTrait
     /**
      * @param string|NodeList|\DOMNode|\Closure $input
      *
-     * @return \DOMNode
+     * @return Element|NodeList|null
      */
     public function closest($input) {
-        return $this->_walkPathUntil('parentNode', $input, null, self::$MATCH_TYPE_LAST);
+        $results = $this->_walkPathUntil('parentNode', $input, null, self::$MATCH_TYPE_LAST);
+
+        return $this->result($results);
     }
 
     /**
