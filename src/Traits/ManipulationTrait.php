@@ -2,12 +2,9 @@
 
 namespace DOMWrap\Traits;
 
+use DOMWrap\Text;
 use DOMWrap\Element;
 use DOMWrap\NodeList;
-
-define('DOM_NODE_TEXT_DEFAULT', 0);
-define('DOM_NODE_TEXT_TRIM', 1);
-define('DOM_NODE_TEXT_NORMALISED', 2);
 
 /**
  * Manipulation Trait
@@ -185,24 +182,44 @@ trait ManipulationTrait
     }
 
     /**
-     * @param int $flag
+     * @param string|NodeList|\DOMNode|\Closure $input
+     *
+     * @return string|self
+     */
+    public function text($input = null) {
+        if (is_null($input)) {
+            return $this->getText();
+        } else {
+            return $this->setText($input);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getText() {
+        return $this->collection()->reduce(function($carry, $node) {
+            return $carry . $node->textContent;
+        }, '');
+    }
+
+    /**
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return string
      */
-    public function text($flag = 0) {
-        $text = $this->collection()->reduce(function($carry, $node) {
-            return $carry . $node->textContent;
+    public function setText($input) {
+        if (is_string($input)) {
+            $input = new Text($input);
+        }
+
+        $this->manipulateNodesWithInput($input, function($node, $newNodes) {
+            // Remove old contents from the current node.
+            $node->contents()->remove();
+
+            // Add new contents in it's place.
+            $node->append(new Text($newNodes->getText()));
         });
-
-        if ($flag & DOM_NODE_TEXT_NORMALISED) {
-            $text = preg_replace('@[\n\r\s\t]+@', " ", $text);
-        }
-
-        if ($flag & (DOM_NODE_TEXT_TRIM | DOM_NODE_TEXT_NORMALISED)) {
-            $text = trim($text);
-        }
-
-        return $text;
     }
 
     /**
@@ -627,7 +644,7 @@ trait ManipulationTrait
     public function getHtml() {
         return $this->collection()->first()->children()->reduce(function($carry, $node) {
             return $carry . $this->document()->saveHTML($node);
-        });
+        }, '');
     }
 
     /**
@@ -650,7 +667,7 @@ trait ManipulationTrait
     /**
      * @param string|NodeList|\DOMNode|\Closure $input
      *
-     * @return self
+     * @return string|self
      */
     public function html($input = null) {
         if (is_null($input)) {
