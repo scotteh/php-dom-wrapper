@@ -140,7 +140,7 @@ trait ManipulationTrait
      */
     public function detach($selector = null) {
         if (!is_null($selector)) {
-            $nodes = $this->find($selector);
+            $nodes = $this->find($selector, 'self::');
         } else {
             $nodes = $this->collection();
         }
