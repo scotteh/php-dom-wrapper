@@ -35,9 +35,6 @@ trait ManipulationTrait
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
 
-    /** @see TraversalTrait::intersect() */
-    abstract public function intersect();
-
     /**
      * Magic method - Trap function names using reserved keyword (empty, clone, etc..)
      *
@@ -563,91 +560,17 @@ trait ManipulationTrait
     }
 
     /**
-     * @param NodeList $nodeList
-     *
-     * @return NodeList
-     */
-    protected function _getNodesBetween(NodeList $nodeList) {
-        $nodeList = clone $nodeList;
-
-        if ($nodeList->count() < 2) {
-            return $nodeList;
-        }
-
-        $parentNode = $nodeList->get(0)->parent();
-
-        $foundStart = false;
-        $newNodeList = $this->newNodeList();
-
-        // Loop through children of the common parent
-        foreach ($parentNode->contents() as $childNode) {
-            $childNodeExists = $nodeList->exists($childNode);
-
-            // Find the starting point
-            if ($childNodeExists) {
-                $nodeList->delete($childNode);
-
-                if (!$newNodeList->count()) {
-                    $foundStart = true;
-                }
-            }
-
-            // Add all nodes start => end.
-            // Includes all non-selected siblings located in-between selected nodes.
-            if ($foundStart) {
-                $newNodeList[] = $childNode;
-            }
-
-            // Find the ending point
-            if ($childNodeExists) {
-                if (!$nodeList->count()) {
-                    $foundStart = false;
-                }
-            }
-        }
-
-        return $newNodeList;
-    }
-
-    /**
-     * @param \DOMNode $commonNode
-     *
-     * @return NodeList
-     */
-    protected function _getWrapAllNodes($commonNode) {
-        // Determine the nodes / common ancestor nodes relative to $commonNode.
-        $matchedNodes = $this->collection()->map(function($node) use($commonNode) {
-            $parents = $node->parents()->toArray();
-
-            $index = array_search($commonNode, $parents, true);
-
-            if ($index > 0) {
-                return $parents[$index - 1];
-            } else {
-                return $node;
-            }
-        });
-
-        // List of all nodes to be wrapped.
-        return $this->_getNodesBetween($matchedNodes);
-    }
-
-    /**
-     * @param string|NodeList|\DOMNode $input
+     * @param string|NodeList|\DOMNode|\Closure $input
      *
      * @return self
      */
     public function wrapAll($input) {
-        $commonNode = $this->intersect();
-
-        if (!($commonNode instanceof Element)) {
+        if (!$this->collection()->count()) {
             return $this;
         }
 
-        // Collection is a single node, or the common node is already
-        //  in the collection, just call self::wrap() instead.
-        if ($this->collection()->exists($commonNode)) {
-            return $commonNode->wrap($input);
+        if ($input instanceof \Closure) {
+            $input = $input($this->collection()->first());
         }
 
         $inputNode = $this->inputAsFirstNode($input);
@@ -656,21 +579,14 @@ trait ManipulationTrait
             return $this;
         }
 
-        // Get NodeList of all nodes within $commonNode to be wrapped.
-        $wrapNodes = $this->_getWrapAllNodes($commonNode);
-
-        // Pre-process wrapper into a stack of first element nodes.
         $stackNodes = $this->_prepareWrapStack($inputNode);
 
-        // Add the new bottom (root) node after the current node
-        $wrapNodes->last()->after($stackNodes->bottom());
+        // Add the new bottom (root) node before the first matched node
+        $this->collection()->first()->before($stackNodes->bottom());
 
-        $wrapNodes->each(function($node) use($stackNodes) {
-            // Remove the current node
-            $oldNode = $node->parent()->removeChild($node);
-
-            // Add the 'current node' back inside the new top (leaf) node.
-            $stackNodes->top()->append($oldNode);
+        $this->collection()->each(function($node) use ($stackNodes) {
+            // Detach and add node back inside the new wrappers top (leaf) node.
+            $stackNodes->top()->append($node->detach());
         });
 
         return $this;

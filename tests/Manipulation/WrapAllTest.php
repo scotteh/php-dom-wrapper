@@ -15,7 +15,7 @@ class WrapAllTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testWrapAllNodeList() {
-        $expected = $this->document('<html><em><strong><section><a href="http://example.org/">this is a test</a></section><div><article><section><p>test!</p></section></article></div></strong></em></html>');
+        $expected = $this->document('<html><em><strong><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></strong></em><div><article></article></div></html>');
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><div><article><section><p>test!</p></section></article></div></html>');
         $doc->find('section')->wrapAll('<em><strong></strong></em>');
 
@@ -31,7 +31,7 @@ class WrapAllTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testWrapAllNodeListNestedShortHand() {
-        $expected = $this->document('<html><em><strong><section><p>test!</p><section><a href="http://example.org/">this is a test</a></section></section></strong></em></html>');
+        $expected = $this->document('<html><em><strong><section><p>test!</p></section><section><a href="http://example.org/">this is a test</a></section></strong></em></html>');
         $doc = $this->document('<html><section><p>test!</p><section><a href="http://example.org/">this is a test</a></section></section></html>');
         $doc->find('section')->wrapAll('<em><strong>');
 
