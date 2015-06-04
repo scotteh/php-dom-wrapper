@@ -30,6 +30,16 @@ class AddClassTest extends \PHPUnit_Framework_TestCase
         $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
     }
 
+    public function testAddClassNodeClosure() {
+        $expected = $this->document('<html><div class="example test dom"><article><a href="http://example.org/">this is a test</a></article></div></html>');
+        $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div></html>');
+        $doc->find('div')->addClass(function($node, $index, $attr) {
+            return 'dom';
+        });
+
+        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+    }
+
     public function testAddClassNodeList() {
         $expected = $this->document('<html><div class="example test dom"><article><a href="http://example.org/">this is a test</a></article></div><section class="test example dom"><span><em>testing 123..!</em></span></section></html>');
         $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="test example"><span><em>testing 123..!</em></span></section></html>');

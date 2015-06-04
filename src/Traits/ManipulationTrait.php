@@ -399,13 +399,17 @@ trait ManipulationTrait
      * @internal
      *
      * @param string $name
-     * @param string $value
+     * @param string|\Closure $value
      * @param bool $addValue
      */
     protected function _pushAttrValue($name, $value, $addValue = false) {
-        $this->collection()->each(function($node) use($name, $value, $addValue) {
+        $this->collection()->each(function($node, $index) use($name, $value, $addValue) {
             if ($node instanceof \DOMElement) {
                 $attr = $node->getAttribute($name);
+
+                if ($value instanceof \Closure) {
+                    $value = $value($node, $index, $attr);
+                }
 
                 // Remove any existing instances of the value, or empty values.
                 $values = array_filter(explode(' ', $attr), function($_value) use($value) {
@@ -433,7 +437,7 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string $class
+     * @param string|\Closure $class
      *
      * @return self
      */
@@ -444,7 +448,7 @@ trait ManipulationTrait
     }
 
     /**
-     * @param string $class
+     * @param string|\Closure $class
      *
      * @return self
      */
