@@ -547,7 +547,7 @@ trait ManipulationTrait
         $this->wrapWithInputByCallback($input, function($node, $stackNodes) {
             foreach ($node->contents() as $child) {
                 // Remove child from the current node
-                $oldChild = $node->removeChild($child);
+                $oldChild = $child->detach()->first();
 
                 // Add it back as a child of the top (leaf) node on the stack
                 $stackNodes->top()->append($oldChild);
@@ -571,7 +571,7 @@ trait ManipulationTrait
             $node->after($stackNodes->bottom());
 
             // Remove the current node
-            $oldNode = $node->parent()->removeChild($node);
+            $oldNode = $node->detach()->first();
 
             // Add the 'current node' back inside the new top (leaf) node.
             $stackNodes->top()->append($oldNode);
@@ -622,7 +622,7 @@ trait ManipulationTrait
 
             // Replace parent node (the one we're unwrapping) with it's children.
             $parent->contents()->each(function($childNode) use($parent) {
-                $oldChildNode = $parent->removeChild($childNode);
+                $oldChildNode = $childNode->detach()->first();
 
                 $parent->before($oldChildNode);
             });
