@@ -24,6 +24,7 @@ class Document extends \DOMDocument
         $this->registerNodeClass('DOMText', 'DOMWrap\\Text');
         $this->registerNodeClass('DOMElement', 'DOMWrap\\Element');
         $this->registerNodeClass('DOMComment', 'DOMWrap\\Comment');
+        $this->registerNodeClass('DOMProcessingInstruction', 'DOMWrap\\ProcessingInstruction');
     }
 
     /**
