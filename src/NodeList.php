@@ -274,4 +274,11 @@ class NodeList extends NodeCollection
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isRemoved() {
+        return false;
+    }
 }
