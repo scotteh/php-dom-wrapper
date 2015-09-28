@@ -61,6 +61,10 @@ trait TraversalTrait
     public function findXPath($xpath) {
         $results = $this->newNodeList();
 
+        if ($this->isRemoved()) {
+            return $results;
+        }
+
         $domxpath = new \DOMXPath($this->document());
 
         foreach ($this->collection() as $node) {

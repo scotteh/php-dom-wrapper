@@ -18,6 +18,9 @@ trait NodeTrait
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
 
+    /** @see CommonTrait::isRemoved() */
+    abstract public function isRemoved();
+
     /**
      * @return NodeList
      */
@@ -29,6 +32,10 @@ trait NodeTrait
      * @return \DOMDocument
      */
     public function document() {
+        if ($this->isRemoved()) {
+            return null;
+        }
+
         return $this->ownerDocument;
     }
 

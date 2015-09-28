@@ -28,4 +28,11 @@ trait CommonTrait
      * @return \DOMNode
      */
     abstract public function result($nodeList);
+
+    /**
+     * @return bool
+     */
+    public function isRemoved() {
+        return !isset($this->nodeType);
+    }
 }

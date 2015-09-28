@@ -29,7 +29,7 @@ class NodeList extends NodeCollection
      * @param Document $document
      * @param Traversable|array $nodes
      */
-    public function __construct(Document $document, $nodes = null) {
+    public function __construct(Document $document = null, $nodes = null) {
         parent::__construct($nodes);
 
         $this->document = $document;
