@@ -37,9 +37,16 @@ trait TestTrait {
         $doc = new Document();
         $doc->html($html);
 
-        // Remove the doctype (if it exists) so we can use \DOMDocument::$firstChild
-        if ($doc->doctype instanceof \DOMDocumentType) {
-            $doc->removeChild($doc->doctype);
+        // Remove any DOMProcessingInstruction/DOMDocumentType nodes from the base document
+        //  so we can use \DOMDocument::$firstChild
+        $length = $doc->childNodes->length;
+
+        for ($i = 0; $i < $length; $i++) {
+            $node = $doc->childNodes->item($i);
+            
+            if ($node instanceof \DOMProcessingInstruction || $node instanceof \DOMDocumentType) {
+                $doc->removeChild($node);
+            }
         }
 
         return $doc;
