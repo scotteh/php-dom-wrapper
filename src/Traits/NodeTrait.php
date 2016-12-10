@@ -9,12 +9,10 @@ use DOMWrap\NodeList;
  *
  * @package DOMWrap\Traits
  * @license http://opensource.org/licenses/BSD-3-Clause BSD 3 Clause
+ * @property \DOMDocument $ownerDocument
  */
 trait NodeTrait
 {
-    /** @var \DOMWrap\Document */
-    protected $ownerDocument;
-
     /** @see TraversalTrait::newNodeList() */
     abstract public function newNodeList($nodes = []);
 
