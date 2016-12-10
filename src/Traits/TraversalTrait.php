@@ -4,7 +4,7 @@ namespace DOMWrap\Traits;
 
 use DOMWrap\Element;
 use DOMWrap\NodeList;
-use Symfony\Component\CssSelector\CssSelector;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
  * Traversal Trait
@@ -50,7 +50,9 @@ trait TraversalTrait
      * @return NodeList
      */
     public function find($selector, $prefix = 'descendant::') {
-        return $this->findXPath(CssSelector::toXPath($selector, $prefix));
+        $converter = new CssSelectorConverter();
+
+        return $this->findXPath($converter->toXPath($selector, $prefix));
     }
 
     /**
