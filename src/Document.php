@@ -95,10 +95,10 @@ class Document extends \DOMDocument
         $disableEntities = libxml_disable_entity_loader(true);
 
         if (mb_detect_encoding($html, mb_detect_order(), true) !== 'UTF-8') {
-            if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
+            if (preg_match('@<meta.*?charset=["\']?([^\'"\s]+)@im', $html, $matches)) {
                 $charset = strtoupper($matches[1]);
 
-                $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
+                $html = preg_replace('@(charset=["\']?)([^\'"\s]+)([^\'"]*[\'"]?)@im', '$1UTF-8$3', $html);
                 $html = mb_convert_encoding($html, 'UTF-8', $charset);
             } else {
                 $html = mb_convert_encoding($html, 'UTF-8', 'auto');
