@@ -1,20 +1,20 @@
-#PHP DOM Wrapper
+# PHP DOM Wrapper
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/?branch=master) [![Build Status](https://travis-ci.org/scotteh/php-dom-wrapper.svg?branch=master)](https://travis-ci.org/scotteh/php-dom-wrapper)
 
-##Intro
+## Intro
 
 PHP DOM Wrapper is a simple DOM wrapper library to manipulate and traverse HTML documents. Based around jQuery's manipulation and traversal methods, largely mimicking the behaviour of it's jQuery counterparts.
 
-##Author
+## Author
 
  - Andrew Scott (andrew@andrewscott.net.au)
 
-##Requirements
+## Requirements
 
  - PHP 5.4 or later
  - PSR-4 compatible autoloader
 
-##Install
+## Install
 
 This library is designed to be installed via [Composer](https://getcomposer.org/doc/).
 
@@ -37,7 +37,7 @@ Install the library.
 php composer.phar install
 ```
 
-##Autoloading
+## Autoloading
 
 This library requires an autoloader, if you aren't already using one you can include [Composers autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading).
 
@@ -45,9 +45,9 @@ This library requires an autoloader, if you aren't already using one you can inc
 require('vendor/autoload.php');
 ```
 
-##Methods
+## Methods
 
-###Manipulation
+### Manipulation
 
 | Method | Implemented |
 |--------|-------------|
@@ -72,7 +72,7 @@ require('vendor/autoload.php');
 | wrapAll     | **Yes** |
 | wrapInner   | **Yes** |
 
-###Traversal
+### Traversal
 
 | Method | Implemented | Method Name *(if different)* |
 |--------|-------------|------------------------------|
@@ -106,7 +106,7 @@ Additional Methods:
 * count()
 * each()
 
-##Usage
+## Usage
 
 Example #1:
 ``` php
@@ -128,6 +128,6 @@ $nodes->append('<b>!</b>');
 var_dump($doc->saveHTML($doc));
 ```
 
-##Licensing
+## Licensing
 
 PHP DOM Wrapper is licensed by Andrew Scott under the BSD 3-Clause License, see the LICENSE file for more details.
