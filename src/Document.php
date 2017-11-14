@@ -5,6 +5,8 @@ namespace DOMWrap;
 use DOMWrap\Traits\CommonTrait;
 use DOMWrap\Traits\TraversalTrait;
 use DOMWrap\Traits\ManipulationTrait;
+use ForceUTF8\Encoding as ForceUTF8;
+
 
 /**
  * Document Node
@@ -96,10 +98,8 @@ class Document extends \DOMDocument
 
         if (mb_detect_encoding($html, mb_detect_order(), true) !== 'UTF-8') {
             if (preg_match('@<meta.*?charset=["\']?([^\'"\s]+)@im', $html, $matches)) {
-                $charset = strtoupper($matches[1]);
-
                 $html = preg_replace('@(charset=["\']?)([^\'"\s]+)([^\'"]*[\'"]?)@im', '$1UTF-8$3', $html);
-                $html = mb_convert_encoding($html, 'UTF-8', $charset);
+                $html = ForceUTF8::fixUTF8($html);
             } else {
                 $html = mb_convert_encoding($html, 'UTF-8', 'auto');
             }
