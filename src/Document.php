@@ -1,10 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace DOMWrap;
 
-use DOMWrap\Traits\CommonTrait;
-use DOMWrap\Traits\TraversalTrait;
-use DOMWrap\Traits\ManipulationTrait;
+use DOMWrap\Traits\{
+    CommonTrait,
+    TraversalTrait,
+    ManipulationTrait
+};
 
 /**
  * Document Node
@@ -18,7 +20,7 @@ class Document extends \DOMDocument
     use TraversalTrait;
     use ManipulationTrait;
 
-    public function __construct($version = null, $encoding = null) {
+    public function __construct(string $version = '1.0', string $encoding = 'UTF-8') {
         parent::__construct($version, $encoding);
 
         $this->registerNodeClass('DOMText', 'DOMWrap\\Text');
@@ -31,21 +33,21 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function document() {
+    public function document(): ?\DOMDocument {
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function collection() {
+    public function collection(): NodeList {
         return $this->newNodeList([$this]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function result($nodeList) {
+    public function result(NodeList $nodeList) {
         if ($nodeList->count()) {
             return $nodeList->first();
         }
@@ -70,7 +72,7 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function replaceWith($newNode) {
+    public function replaceWith($newNode): self {
         $this->replaceChild($newNode, $this);
 
         return $this;
@@ -79,14 +81,21 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function getHtml() {
+    public function _clone() {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHtml(): string {
         return $this->getOuterHtml();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setHtml($html) {
+    public function setHtml($html): self {
         if (!is_string($html) || trim($html) == '') {
             return $this;
         }

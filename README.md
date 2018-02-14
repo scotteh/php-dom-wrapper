@@ -11,7 +11,7 @@ PHP DOM Wrapper is a simple DOM wrapper library to manipulate and traverse HTML 
 
 ## Requirements
 
- - PHP 5.4 or later
+ - PHP 7.1 or later
  - PSR-4 compatible autoloader
 
 ## Install
@@ -22,7 +22,7 @@ Add the dependency into your projects composer.json.
 ```
 {
   "require": {
-    "scotteh/php-dom-wrapper": "dev-master"
+    "scotteh/php-dom-wrapper": "^1.0"
   }
 }
 ```

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace DOMWrap\Traits;
 
@@ -15,24 +15,24 @@ trait CommonTrait
     /**
      * @return NodeList
      */
-    abstract public function collection();
+    abstract public function collection(): NodeList;
 
     /**
      * @return \DOMDocument
      */
-    abstract public function document();
+    abstract public function document(): ?\DOMDocument;
 
     /**
      * @param NodeList $nodeList
      *
-     * @return \DOMNode
+     * @return NodeList|\DOMNode
      */
-    abstract public function result($nodeList);
+    abstract public function result(NodeList $nodeList);
 
     /**
      * @return bool
      */
-    public function isRemoved() {
+    public function isRemoved(): bool {
         return !isset($this->nodeType);
     }
 }
