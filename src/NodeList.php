@@ -179,7 +179,7 @@ class NodeList extends NodeCollection
     }
 
     /**
-     * @return iterable
+     * @return array
      */
     public function toArray() {
         return $this->nodes;
@@ -189,11 +189,13 @@ class NodeList extends NodeCollection
      * @param iterable $nodes
      */
     public function fromArray(iterable $nodes = null) {
-        if (!is_iterable($nodes)) {
-            $nodes = [];
-        }
+        $nodes = [];
 
-        $this->nodes = $nodes;
+        if (is_iterable($nodes)) {
+            foreach ($nodes as $node) {
+                $this->nodes[] = $node;
+            }
+        }
     }
 
     /**

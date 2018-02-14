@@ -10,7 +10,7 @@ namespace DOMWrap\Collections;
  */
 class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
 {
-    /** @var iterable */
+    /** @var array */
     protected $nodes = [];
 
     /**
