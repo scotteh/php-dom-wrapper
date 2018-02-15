@@ -189,7 +189,7 @@ class NodeList extends NodeCollection
      * @param iterable $nodes
      */
     public function fromArray(iterable $nodes = null) {
-        $nodes = [];
+        $this->nodes = [];
 
         if (is_iterable($nodes)) {
             foreach ($nodes as $node) {
