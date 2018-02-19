@@ -357,11 +357,11 @@ trait ManipulationTrait
      * @internal
      *
      * @param string $name
-     * @param string $value
+     * @param mixed $value
      *
      * @return self
      */
-    public function setAttr(string $name, string $value): self {
+    public function setAttr(string $name, $value): self {
         $this->collection()->each(function($node) use($name, $value) {
             if ($node instanceof \DOMElement) {
                 $node->setAttribute($name, $value);
@@ -373,11 +373,11 @@ trait ManipulationTrait
 
     /**
      * @param string $name
-     * @param string|null $value
+     * @param mixed $value
      *
      * @return self|mixed
      */
-    public function attr(string $name, string $value = null) {
+    public function attr(string $name, $value = null) {
         if (is_null($value)) {
             return $this->getAttr($name);
         } else {
