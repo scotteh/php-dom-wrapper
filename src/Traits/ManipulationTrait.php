@@ -364,7 +364,7 @@ trait ManipulationTrait
     public function setAttr(string $name, $value): self {
         $this->collection()->each(function($node) use($name, $value) {
             if ($node instanceof \DOMElement) {
-                $node->setAttribute($name, $value);
+                $node->setAttribute($name, (string)$value);
             }
         });
 
