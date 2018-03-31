@@ -15,7 +15,7 @@ class AttrTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testGetAttrNodeDoesntExist() {
-        $expected = null;
+        $expected = '';
         $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div></html>');
         $class = $doc->find('div')->attr('id');
 
@@ -23,7 +23,7 @@ class AttrTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testGetAttrNodeInvalid() {
-        $expected = null;
+        $expected = '';
         $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div></html>');
         $class = $doc->find('div')->unshift(new \DOMWrap\Text)->attr('class');
 
@@ -39,7 +39,7 @@ class AttrTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testGetAttrNodeListDoesntExist() {
-        $expected = null;
+        $expected = '';
         $doc = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="test example"><span><em>testing 123..!</em></span></section></html>');
         $class = $doc->find('div, section')->attr('id');
 

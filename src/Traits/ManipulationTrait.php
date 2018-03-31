@@ -335,19 +335,19 @@ trait ManipulationTrait
      *
      * @param string $name
      *
-     * @return string|null
+     * @return string
      */
-    public function getAttr(string $name): ?string {
+    public function getAttr(string $name): string {
         $node = $this->collection()->first();
 
         if (!($node instanceof \DOMElement)) {
-            return null;
+            return '';
         }
 
         $result = $node->getAttribute($name);
 
         if (empty($result)) {
-            return null;
+            return '';
         }
 
         return $result;
@@ -375,7 +375,7 @@ trait ManipulationTrait
      * @param string $name
      * @param mixed $value
      *
-     * @return self|mixed
+     * @return self|string
      */
     public function attr(string $name, $value = null) {
         if (is_null($value)) {

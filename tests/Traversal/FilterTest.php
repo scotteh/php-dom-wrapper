@@ -19,6 +19,6 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($nodes->filter('.example')->attr('class'), 'example');
 
         $this->assertSame($nodes->filter(':not(.example)')->count(), 1);
-        $this->assertSame($nodes->filter(':not(.example)')->attr('class'), null);
+        $this->assertSame($nodes->filter(':not(.example)')->attr('class'), '');
     }
 }

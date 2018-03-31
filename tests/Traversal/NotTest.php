@@ -16,7 +16,7 @@ class NotTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $nodes->count());
 
         $this->assertSame($nodes->not('.example')->count(), 1);
-        $this->assertSame($nodes->not('.example')->attr('class'), null);
+        $this->assertSame($nodes->not('.example')->attr('class'), '');
 
         $this->assertSame($nodes->not(':not(.example)')->count(), 1);
         $this->assertSame($nodes->not(':not(.example)')->attr('class'), 'example');
