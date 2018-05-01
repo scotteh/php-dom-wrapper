@@ -107,7 +107,7 @@ class Document extends \DOMDocument
             $charset = 'auto';
 
             if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
-                if (in_array($matches[1], mb_list_encodings())) {
+                if (in_array(strtoupper($matches[1]), array_map('strtoupper', mb_list_encodings()))) {
                     $charset = strtoupper($matches[1]);
                     $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
                 }
