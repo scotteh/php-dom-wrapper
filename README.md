@@ -49,57 +49,57 @@ require('vendor/autoload.php');
 
 ### Manipulation
 
-| Method | Implemented |
-|--------|-------------|
-| addClass    | **Yes** |
-| after       | **Yes** |
-| append      | **Yes** |
-| attr        | **Yes** |
-| before      | **Yes** |
-| clone       | **Yes** |
-| detach      | **Yes** |
-| empty       | **Yes** |
-| hasClass    | **Yes** |
-| html        | **Yes** |
-| prepend     | **Yes** |
-| remove      | **Yes** |
-| removeAttr  | **Yes** |
-| removeClass | **Yes** |
-| replaceWith | **Yes** |
-| text        | **Yes** |
-| unwrap      | **Yes** |
-| wrap        | **Yes** |
-| wrapAll     | **Yes** |
-| wrapInner   | **Yes** |
+| Method | jQuery Method Name *(if different)* |
+|--------|------------------------------|
+| addClass    |
+| after       |
+| append      |
+| attr        |
+| before      |
+| clone       |
+| detach      |
+| empty       |
+| hasClass    |
+| html        |
+| prepend     |
+| remove      |
+| removeAttr  |
+| removeClass |
+| replaceWith |
+| text        |
+| unwrap      |
+| wrap        |
+| wrapAll     |
+| wrapInner   |
 
 ### Traversal
 
-| Method | Implemented | Method Name *(if different)* |
-|--------|-------------|------------------------------|
-| add          | **Yes** |
-| children     | **Yes** |
-| closest      | **Yes** |
-| contents     | **Yes** |
-| eq           | **Yes** |
-| filter       | **Yes** |
-| find         | **Yes** |
-| first        | **Yes** |
-| has          | **Yes** |
-| is           | **Yes** |
-| last         | **Yes** |
-| map          | **Yes** |
-| next         | **Yes** | *following* |
-| nextAll      | **Yes** | *followingAll* |
-| nextUntil    | **Yes** | *followingUntil* |
-| not          | **Yes** |
-| parent       | **Yes** |
-| parents      | **Yes** |
-| parentsUntil | **Yes** |
-| prev         | **Yes** | *preceding* |
-| prevAll      | **Yes** | *precedingAll* |
-| prevUntil    | **Yes** | *precedingUntil* |
-| siblings     | **Yes** |
-| slice        | **Yes** |
+| Method | jQuery Method Name *(if different)* |
+|--------|------------------------------|
+| (add)[#add]          |
+| (children)[#children]     |
+| (closest)[#closest]      |
+| (contents)[#contents]     |
+| (eq)[#eq]           |
+| (filter)[#filter]       |
+| (find)[#find]         |
+| (first)[#first]        |
+| (has)[#has]          |
+| (is)[#is]           |
+| (last)[#last]         |
+| (map)[#map]          |
+| (following)[#following]         | *next* |
+| (followingAll)[#followingAll]      | *nextAll* |
+| (followingUntil)[#followingUntil]    | *nextUntil* |
+| (not)[#not]          |
+| (parent)[#parent]       |
+| (parents)[#parents]      |
+| (parentsUntil)[#parentsUntil] |
+| (preceding)[#preceding]         | *prev* |
+| (precedingAll)[#precedingAll]      | *prevAll* |
+| (precedingUntil)[#precedingUntil]    | *prevUntil* |
+| (siblings)[#siblings]     |
+| (slice)[#slice]        |
 
 Additional Methods:
 
@@ -127,6 +127,517 @@ $nodes->append('<b>!</b>');
 // Returns: <html><body><ul><li>First<b>!</b></li><li>Second<b>!</b></li><li>Third<b>!</b></li></ul></body></html>
 var_dump($doc->saveHTML($doc));
 ```
+
+---
+
+## Methods
+
+### Manipulation
+
+#### addClass
+#### after
+#### append
+#### attr
+#### before
+#### clone
+#### detach
+#### empty
+#### hasClass
+#### html
+#### prepend
+#### remove
+#### removeAttr
+#### removeClass
+#### replaceWith
+#### text
+#### unwrap
+#### wrap
+#### wrapAll
+#### wrapInner
+
+### Traversal
+
+#### add
+
+<u>Definition</u>
+
+```
+NodeList add(string|NodeList|\DOMNode $input)
+```
+    
+Add additional node(s) to the existing set.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$nodes->add($doc->find('p'));
+```
+
+---
+
+#### children
+
+<u>Definition</u>
+
+```
+NodeList children()
+```
+    
+Return children of each node in the current set.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+$childrenOfParagraphs = $nodes->children();
+```
+
+---
+
+#### closest
+
+<u>Definition</u>
+
+```
+Element|NodeList|null closest(string|NodeList|\DOMNode|callable $input)
+```
+    
+Return the first element matching the supplied input by traversing up through the ancestors of each node in the current set. 
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$closestAncestors = $nodes->closest('p');
+```
+
+---
+
+#### contents
+
+<u>Definition</u>
+
+```
+NodeList contents()
+```
+    
+Return the children of each node in the current set.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+$contents = $nodes->contents();
+```
+
+---
+
+#### eq
+
+<u>Definition</u>
+
+```
+\DOMNode|null eq(int $index)
+```
+    
+Return node in the current set at the specified index.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$nodeAtIndexOne = $nodes->eq(1);
+```
+
+---
+
+#### filter
+
+<u>Definition</u>
+
+```
+NodeList filter(string|NodeList|\DOMNode|callable $input)
+```
+    
+Return nodes in the current set that match the input. 
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->filter('a')
+$exampleATags = $nodes->filter('[href*=https://example.org/]');
+```
+
+---
+
+#### find
+
+<u>Definition</u>
+
+```
+NodeList find(string $selector[, string $prefix = 'descendant::'])
+```
+    
+Return the decendants of the current set filtered by the selector and optional XPath axes.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+```
+
+---
+
+#### first
+
+<u>Definition</u>
+
+```
+mixed first(int $index)
+```
+    
+Return the first node of the current set.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$firstNode = $nodes->first();
+```
+
+---
+
+#### has
+
+<u>Definition</u>
+
+```
+NodeList has(string|NodeList|\DOMNode|callable $input)
+```
+    
+Return nodes with decendants of the current set matching the input. 
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$anchorTags = $nodes->has('span');
+```
+
+---
+
+#### is
+
+<u>Definition</u>
+
+```
+bool is(string|NodeList|\DOMNode|callable $input)
+```
+    
+Test is nodes from the current set match the input. 
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$anchorTags = $nodes->has('[anchor]');
+```
+
+---
+
+#### last
+
+<u>Definition</u>
+
+```
+mixed last(int $index)
+```
+    
+Return the last node of the current set.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$lastNode = $nodes->last();
+```
+
+---
+
+#### map
+
+<u>Definition</u>
+
+```
+NodeList map(callable $function)
+```
+    
+Apply a callback to nodes in the current set and return a new NodeList.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$lastNode = $nodes->last();
+```
+
+---
+
+#### following
+
+<u>Definition</u>
+
+```
+\DOMNode|null following([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return the sibling immediately following each element node in the current set. 
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$follwingNodes = $nodes->following();
+```
+
+---
+
+#### followingAll
+
+<u>Definition</u>
+
+```
+NodeList followingAll([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return all siblings following each element node in the current set.
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$follwingAllNodes = $nodes->followingAll('[anchor]');
+```
+
+---
+
+#### followingUntil
+
+<u>Definition</u>
+
+```
+NodeList followingUntil([[string|NodeList|\DOMNode|callable $selector = null], string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return all siblings following each element node in the current set upto but not including the node matched by $input.
+
+*Optionally filtered by input.*
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$follwingUntilNodes = $nodes->followingUntil('.submit');
+```
+
+---
+
+#### not
+
+<u>Definition</u>
+
+```
+NodeList not(string|NodeList|\DOMNode|callable $input)
+```
+    
+Return element nodes from the current set not matching the input. 
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$missingHrefAttribute = $nodes->not('[href]');
+```
+
+---
+
+#### parent
+
+<u>Definition</u>
+
+```
+Element|NodeList|null parent([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return the immediate parent of each element node in the current set. 
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$parentNodes = $nodes->parent();
+```
+
+---
+
+#### parents
+
+<u>Definition</u>
+
+```
+NodeList parent([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return the ancestors of each element node in the current set. 
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$ancestorDivNodes = $nodes->parents('div');
+```
+
+---
+
+#### parentsUntil
+
+<u>Definition</u>
+
+```
+NodeList parent([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return the ancestors of each element node in the current set upto but not including the node matched by $selector.
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$ancestorDivNodes = $nodes->parents('div');
+```
+
+---
+
+#### preceding
+
+<u>Definition</u>
+
+```
+\DOMNode|null preceding([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return the sibling immediately preceding each element node in the current set. 
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$precedingNodes = $nodes->preceding();
+```
+
+---
+
+#### precedingAll
+
+<u>Definition</u>
+
+```
+NodeList precedingAll([string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return all siblings preceding each element node in the current set.
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$precedingAllNodes = $nodes->precedingAll('[anchor]');
+```
+
+---
+#### precedingUntil
+
+<u>Definition</u>
+
+```
+NodeList precedingUntil([[string|NodeList|\DOMNode|callable $selector = null], string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return all siblings preceding each element node in the current set upto but not including the node matched by $input.
+
+*Optionally filtered by input.*
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('a');
+$precedingUntilNodes = $nodes->precedingUntil('.submit');
+```
+
+---
+
+#### siblings
+
+<u>Definition</u>
+
+```
+NodeList siblings([[string|NodeList|\DOMNode|callable $selector = null])
+```
+    
+Return siblings of each element node in the current set.
+
+*Optionally filtered by selector.*
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+siblings = $nodes->siblings();
+```
+
+---
+
+#### slice
+
+<u>Definition</u>
+
+```
+NodeList slcie(int $start, int $end)
+```
+    
+Return a subset of the current set based on the start and end indexes.
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+// Return nodes 1 through to 3 as a new NodeList
+siblings = $nodes->slice(1, 3);
+```
+
+---
+
+### Additional Methods
+
+#### count
+#### each
 
 ## Licensing
 
