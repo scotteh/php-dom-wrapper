@@ -76,30 +76,30 @@ require('vendor/autoload.php');
 
 | Method | jQuery Method Name *(if different)* |
 |--------|------------------------------|
-| (add)[#add]          |
-| (children)[#children]     |
-| (closest)[#closest]      |
-| (contents)[#contents]     |
-| (eq)[#eq]           |
-| (filter)[#filter]       |
-| (find)[#find]         |
-| (first)[#first]        |
-| (has)[#has]          |
-| (is)[#is]           |
-| (last)[#last]         |
-| (map)[#map]          |
-| (following)[#following]         | *next* |
-| (followingAll)[#followingAll]      | *nextAll* |
-| (followingUntil)[#followingUntil]    | *nextUntil* |
-| (not)[#not]          |
-| (parent)[#parent]       |
-| (parents)[#parents]      |
-| (parentsUntil)[#parentsUntil] |
-| (preceding)[#preceding]         | *prev* |
-| (precedingAll)[#precedingAll]      | *prevAll* |
-| (precedingUntil)[#precedingUntil]    | *prevUntil* |
-| (siblings)[#siblings]     |
-| (slice)[#slice]        |
+| [add](#add)          |
+| [children](#children)     |
+| [closest](#closest)      |
+| [contents](#contents)     |
+| [eq](#eq)           |
+| [filter](#filter)       |
+| [find](#find)         |
+| [first](#first)        |
+| [has](#has)          |
+| [is](#is)           |
+| [last](#last)         |
+| [map](#map)          |
+| [following](#following)         | *next* |
+| [followingAll](#followingAll)      | *nextAll* |
+| [followingUntil](#followingUntil)    | *nextUntil* |
+| [not](#not)          |
+| [parent](#parent)       |
+| [parents](#parents)      |
+| [parentsUntil](#parentsUntil) |
+| [preceding](#preceding)         | *prev* |
+| [precedingAll](#precedingAll)      | *prevAll* |
+| [precedingUntil](#precedingUntil)    | *prevUntil* |
+| [siblings](#siblings)     |
+| [slice](#slice)        |
 
 Additional Methods:
 
