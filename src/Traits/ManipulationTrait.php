@@ -33,6 +33,13 @@ trait ManipulationTrait
     }
 
     /**
+     * @return string
+     */
+    public function __toString(): string {
+        return $this->getOuterHtml();
+    }
+
+    /**
      * @param string|NodeList|\DOMNode $input
      *
      * @return iterable
