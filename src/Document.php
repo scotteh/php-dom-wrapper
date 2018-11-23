@@ -116,7 +116,8 @@ class Document extends \DOMDocument
             $html = mb_convert_encoding($html, 'UTF-8', $charset);
         }
 
-        $this->loadHTML('<?xml encoding="utf-8"?>' . $html);
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $this->loadHTML($html);
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
