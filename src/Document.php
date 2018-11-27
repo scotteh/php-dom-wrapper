@@ -103,25 +103,55 @@ class Document extends \DOMDocument
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
-        if (mb_detect_encoding($html, mb_detect_order(), true) !== 'UTF-8') {
-            $charset = 'auto';
-
-            if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
-                if (in_array(strtoupper($matches[1]), array_map('strtoupper', mb_list_encodings()))) {
-                    $charset = strtoupper($matches[1]);
-                    $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
-                }
-            }
-
-            $html = mb_convert_encoding($html, 'UTF-8', $charset);
-        }
-
-        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $html = $this->convertToUtf8($html);
         $this->loadHTML($html);
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         return $this;
+    }
+
+    private function getCharset(string $html): ?string {
+        $charset = null;
+
+        if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
+            $charset = strtoupper($matches[1]);
+        }
+
+        return $charset;
+    }
+        
+    private function convertToUtf8(string $html): string {
+        if (mb_detect_encoding($html, mb_detect_order(), true) === 'UTF-8') {
+            return $html;
+        }
+
+        $charset = $this->getCharset($html);
+
+        if ($charset !== null) {
+            $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
+            $mbHasCharset = in_array($charset, array_map('strtoupper', mb_list_encodings()));
+
+            if ($mbHasCharset) {
+                $html = mb_convert_encoding($html, 'UTF-8', $charset);
+
+            // Fallback to iconv if available.
+            } elseif (extension_loaded('iconv')) {
+                $htmlIconv = iconv($charset, 'UTF-8', $html);
+
+                if ($htmlIconv !== false) {
+                    $html = $htmlIconv;
+                } else {
+                    $charset = null;
+                }
+            }
+        }
+
+        if ($charset === null) {
+            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        }
+
+        return $html;
     }
 }
