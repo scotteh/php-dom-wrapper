@@ -102,26 +102,56 @@ class Document extends \DOMDocument
 
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
-
-        if (mb_detect_encoding($html, mb_detect_order(), true) !== 'UTF-8') {
-            $charset = 'auto';
-
-            if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
-                if (in_array(strtoupper($matches[1]), array_map('strtoupper', mb_list_encodings()))) {
-                    $charset = strtoupper($matches[1]);
-                    $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
-                }
-            }
-
-            $html = mb_convert_encoding($html, 'UTF-8', $charset);
-        }
-
-        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-        $this->loadHTML($html);
+                
+        $convertedHtml = self::convertEncoding($html);
+        $this->loadHTML('<?xml encoding="utf-8"?>' . $convertedHtml);
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         return $this;
     }
+        
+    private static function convertEncoding(string $html): string {
+        if (mb_detect_encoding($html, mb_detect_order(), true) === 'UTF-8') {
+            return $html;
+        }
+         
+        $isMbSupported = false;
+        $charset = null;
+
+        $matches = [];
+        if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
+            $charset = strtoupper($matches[1]);
+            if (in_array(strtoupper($matches[1]), array_map('strtoupper', mb_list_encodings()))) {
+                $isMbSupported = true;
+            }
+        }
+
+        if($charset != null) {
+            $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
+                        
+            if($isMbSupported) {
+                $html = mb_convert_encoding($html, 'UTF-8', $charset); 
+            }
+            else if(function_exists("iconv")) {
+                // iconv will return false on failure
+                $hi = @iconv($charset, 'UTF-8', $html);
+                if($hi !== false) {
+                    $html = $hi;
+                }
+                else {
+                    $charset = null;
+                }
+            }
+        }
+                
+        // fallback
+        if($charset == null) {
+            $html = mb_convert_encoding($html, 'UTF-8', "auto");
+        }
+                
+        return $html;
+    }
+        
 }
