@@ -20,6 +20,9 @@ class Document extends \DOMDocument
     use TraversalTrait;
     use ManipulationTrait;
 
+    /** @var int */
+    protected $libxmlOptions = 0;
+
     public function __construct(string $version = '1.0', string $encoding = 'UTF-8') {
         parent::__construct($version, $encoding);
 
@@ -28,6 +31,20 @@ class Document extends \DOMDocument
         $this->registerNodeClass('DOMComment', 'DOMWrap\\Comment');
         $this->registerNodeClass('DOMDocumentType', 'DOMWrap\\DocumentType');
         $this->registerNodeClass('DOMProcessingInstruction', 'DOMWrap\\ProcessingInstruction');
+    }
+
+    /**
+     * Set libxml options.
+     *
+     * Multiple values must use bitwise OR.
+     * eg: LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+     *
+     * @link http://php.net/manual/en/libxml.constants.php
+     *
+     * @param int $libxmlOptions
+     */
+    public function setLibxmlOptions(int $libxmlOptions): void {
+        $this->libxmlOptions = $libxmlOptions;
     }
 
     /**
@@ -104,7 +121,7 @@ class Document extends \DOMDocument
         $disableEntities = libxml_disable_entity_loader(true);
 
         $html = $this->convertToUtf8($html);
-        $this->loadHTML($html);
+        $this->loadHTML($html, $this->libxmlOptions);
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
