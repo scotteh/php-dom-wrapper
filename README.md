@@ -178,13 +178,11 @@ $nodes->add($doc->find('p'));
 
 #### children
 
-<u>Definition</u>
-
 ```
 NodeList children()
 ```
     
-Return children of each node in the current set.
+Return all children of each element node in the current set.
 
 <u>Example</u>
 
@@ -196,8 +194,6 @@ $childrenOfParagraphs = $nodes->children();
 ---
 
 #### closest
-
-<u>Definition</u>
 
 ```
 Element|NodeList|null closest(string|NodeList|\DOMNode|callable $input)
@@ -216,13 +212,11 @@ $closestAncestors = $nodes->closest('p');
 
 #### contents
 
-<u>Definition</u>
-
 ```
 NodeList contents()
 ```
     
-Return the children of each node in the current set.
+Return all children of each node in the current set.
 
 <u>Example</u>
 
@@ -234,8 +228,6 @@ $contents = $nodes->contents();
 ---
 
 #### eq
-
-<u>Definition</u>
 
 ```
 \DOMNode|null eq(int $index)
@@ -254,8 +246,6 @@ $nodeAtIndexOne = $nodes->eq(1);
 
 #### filter
 
-<u>Definition</u>
-
 ```
 NodeList filter(string|NodeList|\DOMNode|callable $input)
 ```
@@ -273,8 +263,6 @@ $exampleATags = $nodes->filter('[href*=https://example.org/]');
 
 #### find
 
-<u>Definition</u>
-
 ```
 NodeList find(string $selector[, string $prefix = 'descendant::'])
 ```
@@ -290,8 +278,6 @@ $nodes = $doc->find('a');
 ---
 
 #### first
-
-<u>Definition</u>
 
 ```
 mixed first(int $index)
@@ -310,8 +296,6 @@ $firstNode = $nodes->first();
 
 #### has
 
-<u>Definition</u>
-
 ```
 NodeList has(string|NodeList|\DOMNode|callable $input)
 ```
@@ -329,8 +313,6 @@ $anchorTags = $nodes->has('span');
 
 #### is
 
-<u>Definition</u>
-
 ```
 bool is(string|NodeList|\DOMNode|callable $input)
 ```
@@ -341,14 +323,12 @@ Test is nodes from the current set match the input.
 
 ``` php
 $nodes = $doc->find('a');
-$anchorTags = $nodes->has('[anchor]');
+$isAnchor = $nodes->is('[anchor]');
 ```
 
 ---
 
 #### last
-
-<u>Definition</u>
 
 ```
 mixed last(int $index)
@@ -367,8 +347,6 @@ $lastNode = $nodes->last();
 
 #### map
 
-<u>Definition</u>
-
 ```
 NodeList map(callable $function)
 ```
@@ -379,14 +357,14 @@ Apply a callback to nodes in the current set and return a new NodeList.
 
 ``` php
 $nodes = $doc->find('a');
-$lastNode = $nodes->last();
+$nodeValues = $nodes->map(function($node) {
+    return $node->nodeValue;
+});
 ```
 
 ---
 
 #### following
-
-<u>Definition</u>
 
 ```
 \DOMNode|null following([string|NodeList|\DOMNode|callable $selector = null])
@@ -407,8 +385,6 @@ $follwingNodes = $nodes->following();
 
 #### followingAll
 
-<u>Definition</u>
-
 ```
 NodeList followingAll([string|NodeList|\DOMNode|callable $selector = null])
 ```
@@ -428,15 +404,13 @@ $follwingAllNodes = $nodes->followingAll('[anchor]');
 
 #### followingUntil
 
-<u>Definition</u>
-
 ```
-NodeList followingUntil([[string|NodeList|\DOMNode|callable $selector = null], string|NodeList|\DOMNode|callable $selector = null])
+NodeList followingUntil([[string|NodeList|\DOMNode|callable $input = null], string|NodeList|\DOMNode|callable $selector = null])
 ```
     
 Return all siblings following each element node in the current set upto but not including the node matched by $input.
 
-*Optionally filtered by input.*
+*Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
 <u>Example</u>
@@ -449,8 +423,6 @@ $follwingUntilNodes = $nodes->followingUntil('.submit');
 ---
 
 #### not
-
-<u>Definition</u>
 
 ```
 NodeList not(string|NodeList|\DOMNode|callable $input)
@@ -468,8 +440,6 @@ $missingHrefAttribute = $nodes->not('[href]');
 ---
 
 #### parent
-
-<u>Definition</u>
 
 ```
 Element|NodeList|null parent([string|NodeList|\DOMNode|callable $selector = null])
@@ -490,8 +460,6 @@ $parentNodes = $nodes->parent();
 
 #### parents
 
-<u>Definition</u>
-
 ```
 NodeList parent([string|NodeList|\DOMNode|callable $selector = null])
 ```
@@ -511,28 +479,25 @@ $ancestorDivNodes = $nodes->parents('div');
 
 #### parentsUntil
 
-<u>Definition</u>
-
 ```
-NodeList parent([string|NodeList|\DOMNode|callable $selector = null])
+NodeList parentsUntil([[string|NodeList|\DOMNode|callable $input, [string|NodeList|\DOMNode|callable $selector = null])
 ```
     
 Return the ancestors of each element node in the current set upto but not including the node matched by $selector.
 
+*Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
 <u>Example</u>
 
 ``` php
 $nodes = $doc->find('a');
-$ancestorDivNodes = $nodes->parents('div');
+$ancestorDivNodes = $nodes->parentsUntil('div');
 ```
 
 ---
 
 #### preceding
-
-<u>Definition</u>
 
 ```
 \DOMNode|null preceding([string|NodeList|\DOMNode|callable $selector = null])
@@ -553,8 +518,6 @@ $precedingNodes = $nodes->preceding();
 
 #### precedingAll
 
-<u>Definition</u>
-
 ```
 NodeList precedingAll([string|NodeList|\DOMNode|callable $selector = null])
 ```
@@ -573,15 +536,13 @@ $precedingAllNodes = $nodes->precedingAll('[anchor]');
 ---
 #### precedingUntil
 
-<u>Definition</u>
-
 ```
-NodeList precedingUntil([[string|NodeList|\DOMNode|callable $selector = null], string|NodeList|\DOMNode|callable $selector = null])
+NodeList precedingUntil([[string|NodeList|\DOMNode|callable $input = null], string|NodeList|\DOMNode|callable $selector = null])
 ```
     
 Return all siblings preceding each element node in the current set upto but not including the node matched by $input.
 
-*Optionally filtered by input.*
+*Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
 <u>Example</u>
@@ -594,8 +555,6 @@ $precedingUntilNodes = $nodes->precedingUntil('.submit');
 ---
 
 #### siblings
-
-<u>Definition</u>
 
 ```
 NodeList siblings([[string|NodeList|\DOMNode|callable $selector = null])
@@ -616,10 +575,8 @@ siblings = $nodes->siblings();
 
 #### slice
 
-<u>Definition</u>
-
 ```
-NodeList slcie(int $start, int $end)
+NodeList slice(int $start, int $end)
 ```
     
 Return a subset of the current set based on the start and end indexes.
