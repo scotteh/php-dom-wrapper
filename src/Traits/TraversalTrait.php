@@ -347,8 +347,10 @@ trait TraversalTrait
      */
     public function contents(): NodeList {
         $results = $this->collection()->reduce(function($carry, $node) {
-            if($node->isRemoved())
-                return $this->newNodeList();
+            if ($node->isRemoved()) {
+                return $carry;
+            }
+
             return $carry->merge(
                 $node->newNodeList($node->childNodes)
             );
