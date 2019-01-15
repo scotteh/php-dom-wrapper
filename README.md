@@ -568,7 +568,7 @@ Return siblings of each element node in the current set.
 
 ``` php
 $nodes = $doc->find('p');
-siblings = $nodes->siblings();
+$siblings = $nodes->siblings();
 ```
 
 ---
@@ -586,7 +586,7 @@ Return a subset of the current set based on the start and end indexes.
 ``` php
 $nodes = $doc->find('p');
 // Return nodes 1 through to 3 as a new NodeList
-siblings = $nodes->slice(1, 3);
+$nodes = $nodes->slice(1, 3);
 ```
 
 ---
