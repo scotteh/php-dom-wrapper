@@ -586,7 +586,7 @@ Return a subset of the current set based on the start and end indexes.
 ``` php
 $nodes = $doc->find('p');
 // Return nodes 1 through to 3 as a new NodeList
-$nodes = $nodes->slice(1, 3);
+$slicedNodes = $nodes->slice(1, 3);
 ```
 
 ---
