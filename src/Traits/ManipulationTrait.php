@@ -113,7 +113,11 @@ trait ManipulationTrait
         $this->collection()->each(function($node, $index) use ($input, $callback) {
             $html = $input;
 
-            if (is_callable($input)) {
+            if ($input instanceof \DOMNode) {
+                if ($input->parentNode !== null) {
+                    $html = $input->cloneNode(true);
+                }
+            } elseif (is_callable($input)) {
                 $html = $input($node, $index);
             }
 
