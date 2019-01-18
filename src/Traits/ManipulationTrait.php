@@ -681,4 +681,13 @@ trait ManipulationTrait
             return $this->setHtml($input);
         }
     }
+
+    /**
+     * @param string|NodeList|\DOMNode $input
+     *
+     * @return NodeList
+     */
+    public function create($input): NodeList {
+        return $this->inputAsNodeList($input);
+    }
 }
