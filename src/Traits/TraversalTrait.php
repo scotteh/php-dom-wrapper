@@ -77,7 +77,7 @@ trait TraversalTrait
      */
     protected function getNodesMatchingInput($input, bool $matchType = true): NodeList {
         if ($input instanceof NodeList || $input instanceof \DOMNode) {
-            $inputNodes = $this->inputAsNodeList($input);
+            $inputNodes = $this->inputAsNodeList($input, false);
 
             $fn = function($node) use ($inputNodes) {
                 return $inputNodes->exists($node);
@@ -144,7 +144,7 @@ trait TraversalTrait
      */
     public function has($input): NodeList {
         if ($input instanceof NodeList || $input instanceof \DOMNode) {
-            $inputNodes = $this->inputAsNodeList($input);
+            $inputNodes = $this->inputAsNodeList($input, false);
 
             $fn = function($node) use ($inputNodes) {
                 $descendantNodes = $node->find('*', 'descendant::');

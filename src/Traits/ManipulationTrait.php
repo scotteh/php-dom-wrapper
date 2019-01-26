@@ -46,6 +46,11 @@ trait ManipulationTrait
      */
     protected function inputPrepareAsTraversable($input): iterable {
         if ($input instanceof \DOMNode) {
+            // Handle raw \DOMNode elements and 'convert' them into their DOMWrap/* counterpart
+            if (!method_exists($input, 'inputPrepareAsTraversable')) {
+                $input = $this->document()->importNode($input, true);
+            }
+
             $nodes = [$input];
         } else if (is_string($input)) {
             $nodes = $this->nodesFromHtml($input);
@@ -60,20 +65,25 @@ trait ManipulationTrait
 
     /**
      * @param string|NodeList|\DOMNode $input
+     * @param bool $cloneForManipulate
      *
      * @return NodeList
      */
-    protected function inputAsNodeList($input): NodeList {
+    protected function inputAsNodeList($input, $cloneForManipulate = true): NodeList {
         $nodes = $this->inputPrepareAsTraversable($input);
 
         $newNodes = $this->newNodeList();
 
         foreach ($nodes as $node) {
             if ($node->document() !== $this->document()) {
-                $newNodes[] = $this->document()->importNode($node, true);
-            } else {
-                $newNodes[] = $node;
+                 $node = $this->document()->importNode($node, true);
             }
+
+            if ($cloneForManipulate && $node->parentNode !== null) {
+                $node = $node->cloneNode(true);
+            }
+
+            $newNodes[] = $node;
         }
 
         return $newNodes;
@@ -113,11 +123,11 @@ trait ManipulationTrait
         $this->collection()->each(function($node, $index) use ($input, $callback) {
             $html = $input;
 
-            if ($input instanceof \DOMNode) {
+            /*if ($input instanceof \DOMNode) {
                 if ($input->parentNode !== null) {
                     $html = $input->cloneNode(true);
                 }
-            } elseif (is_callable($input)) {
+            } else*/if (is_callable($input)) {
                 $html = $input($node, $index);
             }
 
