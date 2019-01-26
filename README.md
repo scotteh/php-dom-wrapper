@@ -54,6 +54,7 @@ require('vendor/autoload.php');
 | addClass    |
 | after       |
 | append      |
+| appendTo    |
 | attr        |
 | before      |
 | clone       |
@@ -62,6 +63,7 @@ require('vendor/autoload.php');
 | hasClass    |
 | html        |
 | prepend     |
+| prependTo   |
 | remove      |
 | removeAttr  |
 | removeClass |
@@ -137,6 +139,7 @@ var_dump($doc->saveHTML($doc));
 #### addClass
 #### after
 #### append
+#### appendTo
 #### attr
 #### before
 #### clone
@@ -145,6 +148,7 @@ var_dump($doc->saveHTML($doc));
 #### hasClass
 #### html
 #### prepend
+#### prependTo
 #### remove
 #### removeAttr
 #### removeClass
