@@ -49,64 +49,66 @@ require('vendor/autoload.php');
 
 ### Manipulation
 
-| Method | jQuery Method Name *(if different)* |
+| Method | jQuery Equivalent *(if different)* |
 |--------|------------------------------|
-| addClass    |
-| after       |
-| append      |
-| appendTo    |
-| attr        |
-| before      |
-| clone       |
-| detach      |
-| empty       |
-| hasClass    |
-| html        |
-| prepend     |
-| prependTo   |
-| remove      |
-| removeAttr  |
-| removeClass |
-| replaceWith |
-| text        |
-| unwrap      |
-| wrap        |
-| wrapAll     |
-| wrapInner   |
+| [addClass()](#addClass)    |
+| [after()](#after)       |
+| [append()](#append)      |
+| [appendTo()](#appendTo)    |
+| [attr()](#attr)        |
+| [before()](#before)      |
+| [clone()](#clone)       |
+| [detach()](#detach)      |
+| [empty()](#empty)       |
+| [hasClass()](#hasClass)    |
+| [html()](#html)        |
+| [prepend()](#prepend)     |
+| [prependTo()](#prependTo)   |
+| [remove()](#remove)      |
+| [removeAttr()](#removeAttr)  |
+| [removeClass()](#removeClass) |
+| [replaceWith()](#replaceWith) |
+| [text()](#text)        |
+| [unwrap()](#unwrap)      |
+| [wrap()](#wrap)        |
+| [wrapAll()](#wrapAll)     |
+| [wrapInner()](#wrapInner)   |
 
 ### Traversal
 
-| Method | jQuery Method Name *(if different)* |
+| Method | jQuery Equivalent *(if different)* |
 |--------|------------------------------|
-| [add](#add)          |
-| [children](#children)     |
-| [closest](#closest)      |
-| [contents](#contents)     |
-| [eq](#eq)           |
-| [filter](#filter)       |
-| [find](#find)         |
-| [first](#first)        |
-| [has](#has)          |
-| [is](#is)           |
-| [last](#last)         |
-| [map](#map)          |
-| [following](#following)         | *next* |
-| [followingAll](#followingAll)      | *nextAll* |
-| [followingUntil](#followingUntil)    | *nextUntil* |
-| [not](#not)          |
-| [parent](#parent)       |
-| [parents](#parents)      |
-| [parentsUntil](#parentsUntil) |
-| [preceding](#preceding)         | *prev* |
-| [precedingAll](#precedingAll)      | *prevAll* |
-| [precedingUntil](#precedingUntil)    | *prevUntil* |
-| [siblings](#siblings)     |
-| [slice](#slice)        |
+| [add()](#add)          |
+| [children()](#children)     |
+| [closest()](#closest)      |
+| [contents()](#contents)     |
+| [eq()](#eq)           |
+| [filter()](#filter)       |
+| [find()](#find)         |
+| [first()](#first)        |
+| [has()](#has)          |
+| [is()](#is)           |
+| [last()](#last)         |
+| [map()](#map)          |
+| [following()](#following)         | *next()* |
+| [followingAll()](#followingAll)      | *nextAll()* |
+| [followingUntil()](#followingUntil)    | *nextUntil()* |
+| [not()](#not)          |
+| [parent()](#parent)       |
+| [parents()](#parents)      |
+| [parentsUntil()](#parentsUntil) |
+| [preceding()](#preceding)         | *prev()* |
+| [precedingAll()](#precedingAll)      | *prevAll()* |
+| [precedingUntil()](#precedingUntil)    | *prevUntil()* |
+| [siblings()](#siblings)     |
+| [slice()](#slice)        |
 
-Additional Methods:
+### Other
 
-* count()
-* each()
+| Method | jQuery Equivalent *(if different)* |
+|--------|------------------------------|
+| [count()](#count)        | *length* (property) |
+| [each()](#each)
 
 ## Usage
 
@@ -137,27 +139,348 @@ var_dump($doc->saveHTML($doc));
 ### Manipulation
 
 #### addClass
+
+<u>Definition</u>
+
+```
+self addClass(string|callable $class)
+```
+
+<u>Example</u>
+
+```php
+$doc = (new Document())->html('<p>first paragraph</p><p>second paragraph</p>');
+$doc->find('p')->addClass('text-center');
+```
+
+<u>Result:</u>
+
+```html
+<p class="text-center">first paragraph</p>
+<p class="text-center">second paragraph</p>
+```
+
+---
+
 #### after
+
+<u>Definition</u>
+
+```
+self after(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+$doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
+$doc->find('li')->after('<span> (after)</span>');
+
+// Result: <ul><li>first<span> (after)</span></li><li>second<span> (after)</span></li></ul>
+```
+
+---
+
 #### append
+
+<u>Definition</u>
+
+```
+self append(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### appendTo
+
+<u>Definition</u>
+
+```
+self appendTo(string|NodeList|\DOMNode $selector)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### attr
+
+<u>Definition</u>
+
+```
+self|string attr(string $name[, mixed $value = null])
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### before
+
+<u>Definition</u>
+
+```
+self before(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### clone
+
+<u>Definition</u>
+
+```
+NodeList|\DOMNode clone()
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### detach
+
+<u>Definition</u>
+
+```
+NodeList detach([string $selector = null])
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### empty
+
+<u>Definition</u>
+
+```
+self empty()
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### hasClass
+
+<u>Definition</u>
+
+```
+bool hasClass(string $class)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### html
+
+<u>Definition</u>
+
+```
+string|self html([string|NodeList|\DOMNode|callable $input = null])
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### prepend
+
+<u>Definition</u>
+
+```
+self prepend(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### prependTo
+
+<u>Definition</u>
+
+```
+self prependTo(string|NodeList|\DOMNode $selector)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### remove
+
+<u>Definition</u>
+
+```
+self remove([string $selector = null])
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### removeAttr
+
+<u>Definition</u>
+
+```
+self removeAttr(string $name)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### removeClass
+
+<u>Definition</u>
+
+```
+self removeClass(string|callable $class)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### replaceWith
+
+<u>Definition</u>
+
+```
+self replaceWith(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### text
+
+<u>Definition</u>
+
+```
+string|self text([string|NodeList|\DOMNode|callable $input = null])
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### unwrap
+
+<u>Definition</u>
+
+```
+self unwrap()
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### wrap
+
+<u>Definition</u>
+
+```
+self wrap(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### wrapAll
+
+<u>Definition</u>
+
+```
+self wrapAll(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 #### wrapInner
+
+<u>Definition</u>
+
+```
+self wrapInner(string|NodeList|\DOMNode|callable $input)
+```
+
+<u>Example</u>
+
+``` php
+```
+
+---
+
 
 ### Traversal
 
@@ -284,7 +607,7 @@ $nodes = $doc->find('a');
 #### first
 
 ```
-mixed first(int $index)
+mixed first()
 ```
     
 Return the first node of the current set.
@@ -335,7 +658,7 @@ $isAnchor = $nodes->is('[anchor]');
 #### last
 
 ```
-mixed last(int $index)
+mixed last()
 ```
     
 Return the last node of the current set.
@@ -465,7 +788,7 @@ $parentNodes = $nodes->parent();
 #### parents
 
 ```
-NodeList parent([string|NodeList|\DOMNode|callable $selector = null])
+NodeList parent([string $selector = null])
 ```
     
 Return the ancestors of each element node in the current set. 
@@ -580,7 +903,7 @@ $siblings = $nodes->siblings();
 #### slice
 
 ```
-NodeList slice(int $start, int $end)
+NodeList slice(int $start[, int $end])
 ```
     
 Return a subset of the current set based on the start and end indexes.
@@ -598,7 +921,34 @@ $slicedNodes = $nodes->slice(1, 3);
 ### Additional Methods
 
 #### count
+
+```
+int count()
+```
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+
+echo $nodes->count();
+```
+
 #### each
+
+```
+self each(callable $function)
+```
+
+<u>Example</u>
+
+``` php
+$nodes = $doc->find('p');
+
+$nodes->each(function($node){
+    echo $node->nodeName . "\n";
+});
+```
 
 ## Licensing
 
