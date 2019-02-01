@@ -129,7 +129,7 @@ var_dump($nodes->count());
 $nodes->append('<b>!</b>');
 
 // Returns: <html><body><ul><li>First<b>!</b></li><li>Second<b>!</b></li><li>Third<b>!</b></li></ul></body></html>
-var_dump($doc->html($doc));
+var_dump($doc->html());
 ```
 
 ---
