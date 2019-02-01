@@ -140,20 +140,18 @@ var_dump($doc->saveHTML($doc));
 
 #### addClass
 
-<u>Definition</u>
-
 ```
 self addClass(string|callable $class)
 ```
 
-<u>Example</u>
+##### Example
 
 ```php
 $doc = (new Document())->html('<p>first paragraph</p><p>second paragraph</p>');
 $doc->find('p')->addClass('text-center');
 ```
 
-<u>Result</u>
+##### Result
 
 ```html
 <p class="text-center">first paragraph</p>
@@ -164,13 +162,11 @@ $doc->find('p')->addClass('text-center');
 
 #### after
 
-<u>Definition</u>
-
 ```
 self after(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
@@ -183,13 +179,11 @@ $doc->find('li')->after('<span> (after)</span>');
 
 #### append
 
-<u>Definition</u>
-
 ```
 self append(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -198,13 +192,11 @@ self append(string|NodeList|\DOMNode|callable $input)
 
 #### appendTo
 
-<u>Definition</u>
-
 ```
 self appendTo(string|NodeList|\DOMNode $selector)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -213,13 +205,11 @@ self appendTo(string|NodeList|\DOMNode $selector)
 
 #### attr
 
-<u>Definition</u>
-
 ```
 self|string attr(string $name[, mixed $value = null])
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -228,13 +218,11 @@ self|string attr(string $name[, mixed $value = null])
 
 #### before
 
-<u>Definition</u>
-
 ```
 self before(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -243,13 +231,11 @@ self before(string|NodeList|\DOMNode|callable $input)
 
 #### clone
 
-<u>Definition</u>
-
 ```
 NodeList|\DOMNode clone()
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -258,13 +244,11 @@ NodeList|\DOMNode clone()
 
 #### detach
 
-<u>Definition</u>
-
 ```
 NodeList detach([string $selector = null])
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -273,13 +257,11 @@ NodeList detach([string $selector = null])
 
 #### empty
 
-<u>Definition</u>
-
 ```
 self empty()
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -288,13 +270,11 @@ self empty()
 
 #### hasClass
 
-<u>Definition</u>
-
 ```
 bool hasClass(string $class)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -303,13 +283,11 @@ bool hasClass(string $class)
 
 #### html
 
-<u>Definition</u>
-
 ```
 string|self html([string|NodeList|\DOMNode|callable $input = null])
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -318,13 +296,11 @@ string|self html([string|NodeList|\DOMNode|callable $input = null])
 
 #### prepend
 
-<u>Definition</u>
-
 ```
 self prepend(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -333,13 +309,11 @@ self prepend(string|NodeList|\DOMNode|callable $input)
 
 #### prependTo
 
-<u>Definition</u>
-
 ```
 self prependTo(string|NodeList|\DOMNode $selector)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -348,13 +322,11 @@ self prependTo(string|NodeList|\DOMNode $selector)
 
 #### remove
 
-<u>Definition</u>
-
 ```
 self remove([string $selector = null])
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -363,13 +335,11 @@ self remove([string $selector = null])
 
 #### removeAttr
 
-<u>Definition</u>
-
 ```
 self removeAttr(string $name)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -378,13 +348,11 @@ self removeAttr(string $name)
 
 #### removeClass
 
-<u>Definition</u>
-
 ```
 self removeClass(string|callable $class)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -393,13 +361,11 @@ self removeClass(string|callable $class)
 
 #### replaceWith
 
-<u>Definition</u>
-
 ```
 self replaceWith(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -408,13 +374,11 @@ self replaceWith(string|NodeList|\DOMNode|callable $input)
 
 #### text
 
-<u>Definition</u>
-
 ```
 string|self text([string|NodeList|\DOMNode|callable $input = null])
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -423,13 +387,11 @@ string|self text([string|NodeList|\DOMNode|callable $input = null])
 
 #### unwrap
 
-<u>Definition</u>
-
 ```
 self unwrap()
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -438,13 +400,11 @@ self unwrap()
 
 #### wrap
 
-<u>Definition</u>
-
 ```
 self wrap(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -453,13 +413,11 @@ self wrap(string|NodeList|\DOMNode|callable $input)
 
 #### wrapAll
 
-<u>Definition</u>
-
 ```
 self wrapAll(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -468,13 +426,11 @@ self wrapAll(string|NodeList|\DOMNode|callable $input)
 
 #### wrapInner
 
-<u>Definition</u>
-
 ```
 self wrapInner(string|NodeList|\DOMNode|callable $input)
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 ```
@@ -486,15 +442,13 @@ self wrapInner(string|NodeList|\DOMNode|callable $input)
 
 #### add
 
-<u>Definition</u>
-
 ```
 NodeList add(string|NodeList|\DOMNode $input)
 ```
     
 Add additional node(s) to the existing set.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -511,7 +465,7 @@ NodeList children()
     
 Return all children of each element node in the current set.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
@@ -528,7 +482,7 @@ Element|NodeList|null closest(string|NodeList|\DOMNode|callable $input)
     
 Return the first element matching the supplied input by traversing up through the ancestors of each node in the current set. 
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -545,7 +499,7 @@ NodeList contents()
     
 Return all children of each node in the current set.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
@@ -562,7 +516,7 @@ $contents = $nodes->contents();
     
 Return node in the current set at the specified index.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -579,7 +533,7 @@ NodeList filter(string|NodeList|\DOMNode|callable $input)
     
 Return nodes in the current set that match the input. 
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->filter('a')
@@ -596,7 +550,7 @@ NodeList find(string $selector[, string $prefix = 'descendant::'])
     
 Return the decendants of the current set filtered by the selector and optional XPath axes.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -612,7 +566,7 @@ mixed first()
     
 Return the first node of the current set.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -629,7 +583,7 @@ NodeList has(string|NodeList|\DOMNode|callable $input)
     
 Return nodes with decendants of the current set matching the input. 
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -646,7 +600,7 @@ bool is(string|NodeList|\DOMNode|callable $input)
     
 Test is nodes from the current set match the input. 
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -663,7 +617,7 @@ mixed last()
     
 Return the last node of the current set.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -680,7 +634,7 @@ NodeList map(callable $function)
     
 Apply a callback to nodes in the current set and return a new NodeList.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -701,7 +655,7 @@ Return the sibling immediately following each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -720,7 +674,7 @@ Return all siblings following each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -740,7 +694,7 @@ Return all siblings following each element node in the current set upto but not 
 *Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -757,7 +711,7 @@ NodeList not(string|NodeList|\DOMNode|callable $input)
     
 Return element nodes from the current set not matching the input. 
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -776,7 +730,7 @@ Return the immediate parent of each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -795,7 +749,7 @@ Return the ancestors of each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -815,7 +769,7 @@ Return the ancestors of each element node in the current set upto but not includ
 *Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -834,7 +788,7 @@ Return the sibling immediately preceding each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -853,7 +807,7 @@ Return all siblings preceding each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -872,7 +826,7 @@ Return all siblings preceding each element node in the current set upto but not 
 *Optionally filtered by input.*<br>
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('a');
@@ -891,7 +845,7 @@ Return siblings of each element node in the current set.
 
 *Optionally filtered by selector.*
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
@@ -908,7 +862,7 @@ NodeList slice(int $start[, int $end])
     
 Return a subset of the current set based on the start and end indexes.
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
@@ -922,13 +876,11 @@ $slicedNodes = $nodes->slice(1, 3);
 
 #### count
 
-<u>Definition</u>
-
 ```
 int count()
 ```
 
-<u>Example</u>
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
@@ -938,13 +890,11 @@ echo $nodes->count();
 
 #### each
 
-##### Definition
-
 ```
 self each(callable $function)
 ```
 
-###### Example
+##### Example
 
 ``` php
 $nodes = $doc->find('p');
