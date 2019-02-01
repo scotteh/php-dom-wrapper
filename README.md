@@ -153,7 +153,7 @@ $doc = (new Document())->html('<p>first paragraph</p><p>second paragraph</p>');
 $doc->find('p')->addClass('text-center');
 ```
 
-<u>Result:</u>
+<u>Result</u>
 
 ```html
 <p class="text-center">first paragraph</p>
@@ -922,6 +922,8 @@ $slicedNodes = $nodes->slice(1, 3);
 
 #### count
 
+<u>Definition</u>
+
 ```
 int count()
 ```
@@ -936,11 +938,13 @@ echo $nodes->count();
 
 #### each
 
+##### Definition
+
 ```
 self each(callable $function)
 ```
 
-<u>Example</u>
+###### Example
 
 ``` php
 $nodes = $doc->find('p');
