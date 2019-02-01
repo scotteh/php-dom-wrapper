@@ -123,31 +123,42 @@ class Document extends \DOMDocument
 
         $html = $this->convertToUtf8($html);
 
+        $this->loadHTML($html, $this->libxmlOptions);
+
+        libxml_use_internal_errors($internalErrors);
+        libxml_disable_entity_loader($disableEntities);
+
+        return $this;
+    }
+
+    /**
+     * @param string $html
+     * @param int $options
+     * @return bool
+     */
+    public function loadHTML($html, $options = 0): bool {
         // Fix LibXML's crazy-ness RE root nodes
         // While importing HTML using the LIBXML_HTML_NOIMPLIED option LibXML insists
         //  on having one root node. All subsequent nodes are appended to this first node.
         // To counter this we will create a fake element, allow LibXML to 'do its thing'
         //  then undo it by taking the contents of the fake element, placing it back into
         //  the root and then remove our fake element.
-        if ($this->libxmlOptions & LIBXML_HTML_NOIMPLIED) {
+        if ($options & LIBXML_HTML_NOIMPLIED) {
             $html = '<domwrap></domwrap>' . $html;
         }
 
-        $this->loadHTML($html, $this->libxmlOptions);
+        $result = parent::loadHTML($html, $options);
 
         // Do our re-shuffling of nodes.
         if ($this->libxmlOptions & LIBXML_HTML_NOIMPLIED) {
             $this->children()->first()->contents()->each(function($node){
-               $this->append($node);
+                $this->append($node);
             });
 
             $this->removeChild($this->children()->first());
         }
 
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
-        return $this;
+        return $result;
     }
 
     private function getCharset(string $html): ?string {
