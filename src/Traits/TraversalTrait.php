@@ -395,8 +395,9 @@ trait TraversalTrait
         // Get our first node
         $node = $baseNode->$property;
 
-        // Keep looping until we're either out of nodes, or at the root of the DOM.
-        while ($node instanceof \DOMNode && !($node instanceof \DOMDocument)) {
+        // Keep looping until we are out of nodes.
+        // Allow either FIRST to reach \DOMDocument. Others that return multiple should ignore it.
+        while ($node instanceof \DOMNode && ($matchType === self::$MATCH_TYPE_FIRST || !($node instanceof \DOMDocument))) {
             // Filter nodes if not matching last
             if ($matchType != self::$MATCH_TYPE_LAST && (is_null($selector) || $node->is($selector))) {
                 $resultNodes[] = $node;
