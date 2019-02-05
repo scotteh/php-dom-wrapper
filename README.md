@@ -151,11 +151,10 @@ $doc = (new Document())->html('<p>first paragraph</p><p>second paragraph</p>');
 $doc->find('p')->addClass('text-center');
 ```
 
-##### Result
+*Result:*
 
-```html
-<p class="text-center">first paragraph</p>
-<p class="text-center">second paragraph</p>
+``` html
+<p class="text-center">first paragraph</p><p class="text-center">second paragraph</p>
 ```
 
 ---
@@ -170,9 +169,13 @@ self after(string|NodeList|\DOMNode|callable $input)
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
-$doc->find('li')->after('<span> (after)</span>');
+$doc->find('li')->after('<span> (after)</span>'); 
+```
 
-// Result: <ul><li>first<span> (after)</span></li><li>second<span> (after)</span></li></ul>
+*Result:*
+
+``` html
+<ul><li>first<span> (after)</span></li><li>second<span> (after)</span></li></ul>
 ```
 
 ---
@@ -186,6 +189,14 @@ self append(string|NodeList|\DOMNode|callable $input)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div></div>>');
+$doc->find('div')->append('<strong>Appended!</strong>');
+```
+
+*Result:*
+
+``` html
+<div><strong>Appended!</strong></div>
 ```
 
 ---
@@ -199,6 +210,13 @@ self appendTo(string|NodeList|\DOMNode $selector)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div></div>>');
+$doc->create('<strong>Appended!</strong>')->appendTo('div');
+```
+
+*Result:*
+``` html
+<div><strong>Appended!</strong></div>
 ```
 
 ---
@@ -209,9 +227,30 @@ self appendTo(string|NodeList|\DOMNode $selector)
 self|string attr(string $name[, mixed $value = null])
 ```
 
-##### Example
+##### Example #1
 
 ``` php
+$doc = (new Document())->html('<div class="text-center"></div>>');
+echo $doc->attr('text-center');
+```
+
+*Result:*
+
+``` html
+text-center
+```
+
+##### Example #2
+
+``` php
+$doc = (new Document())->html('<div class="text-center"></div>>');
+$doc->attr('class', 'text-left');
+```
+
+*Result:*
+
+``` html
+<div class="text-left"></div>>
 ```
 
 ---
@@ -225,6 +264,14 @@ self before(string|NodeList|\DOMNode|callable $input)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
+$doc->find('li')->after('<span>(before) </span>'); 
+```
+
+*Result:*
+
+``` html
+<ul><li><span>(before) </span>first</li><li><span>(before) </span>second</li></ul>
 ```
 
 ---
@@ -238,6 +285,14 @@ NodeList|\DOMNode clone()
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<ul><li>Item</li></ul>');
+$doc->find('div')->clone()->appendTo('ul'); 
+```
+
+*Result:*
+
+``` html
+<ul><li>Item</li><li>Item</li></ul>
 ```
 
 ---
@@ -251,6 +306,15 @@ NodeList detach([string $selector = null])
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<ul class="first"><li>Item</li></ul><ul class="second"></ul>');
+$el = $doc->find('ul.first li')->detach();
+$doc->first('ul.second').append($el); 
+```
+
+*Result:*
+
+``` html
+<ul class="first"></ul><ul class="second"><li>Item</li></ul>
 ```
 
 ---
@@ -264,6 +328,14 @@ self empty()
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
+$doc->find('div')->empty(); 
+```
+
+*Result:*
+
+``` html
+<div></div>
 ```
 
 ---
@@ -277,6 +349,14 @@ bool hasClass(string $class)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div class="text-center"></div>');
+echo $doc->first('div')->hasClass('text-center');
+```
+
+*Result:*
+
+``` html
+true
 ```
 
 ---
