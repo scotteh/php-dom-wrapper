@@ -227,20 +227,7 @@ $doc->create('<strong> Appended!</strong>')->appendTo('div');
 self|string attr(string $name[, mixed $value = null])
 ```
 
-##### Example #1
-
-``` php
-$doc = (new Document())->html('<div class="text-center"></div>');
-echo $doc->attr('text-center');
-```
-
-*Result:*
-
-``` html
-text-center
-```
-
-##### Example #2
+##### Example #1 (Set)
 
 ``` php
 $doc = (new Document())->html('<div class="text-center"></div>');
@@ -251,6 +238,19 @@ $doc->attr('class', 'text-left');
 
 ``` html
 <div class="text-left"></div>
+```
+
+##### Example #2 (Get)
+
+``` php
+$doc = (new Document())->html('<div class="text-center"></div>');
+echo $doc->attr('text-center');
+```
+
+*Result:*
+
+``` html
+text-center
 ```
 
 ---
@@ -568,7 +568,7 @@ self wrapAll(string|NodeList|\DOMNode|callable $input)
 self wrapInner(string|NodeList|\DOMNode|callable $input)
 ```
 
-##### Example
+##### Example   
 
 ``` php
 ```
