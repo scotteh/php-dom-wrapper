@@ -189,14 +189,14 @@ self append(string|NodeList|\DOMNode|callable $input)
 ##### Example
 
 ``` php
-$doc = (new Document())->html('<div></div>>');
-$doc->find('div')->append('<strong>Appended!</strong>');
+$doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
+$doc->find('div')->append('<strong> Appended!</strong>');
 ```
 
 *Result:*
 
 ``` html
-<div><strong>Appended!</strong></div>
+<div>The quick brown fox jumps over the lazy dog<strong> Appended!</strong></div>
 ```
 
 ---
@@ -210,13 +210,13 @@ self appendTo(string|NodeList|\DOMNode $selector)
 ##### Example
 
 ``` php
-$doc = (new Document())->html('<div></div>>');
-$doc->create('<strong>Appended!</strong>')->appendTo('div');
+$doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
+$doc->create('<strong> Appended!</strong>')->appendTo('div');
 ```
 
 *Result:*
 ``` html
-<div><strong>Appended!</strong></div>
+<div>The quick brown fox jumps over the lazy dog<strong> Appended!</strong></div>
 ```
 
 ---
@@ -230,7 +230,7 @@ self|string attr(string $name[, mixed $value = null])
 ##### Example #1
 
 ``` php
-$doc = (new Document())->html('<div class="text-center"></div>>');
+$doc = (new Document())->html('<div class="text-center"></div>');
 echo $doc->attr('text-center');
 ```
 
@@ -243,14 +243,14 @@ text-center
 ##### Example #2
 
 ``` php
-$doc = (new Document())->html('<div class="text-center"></div>>');
+$doc = (new Document())->html('<div class="text-center"></div>');
 $doc->attr('class', 'text-left');
 ```
 
 *Result:*
 
 ``` html
-<div class="text-left"></div>>
+<div class="text-left"></div>
 ```
 
 ---
@@ -367,9 +367,31 @@ true
 string|self html([string|NodeList|\DOMNode|callable $input = null])
 ```
 
-##### Example
+##### Example #1 (Set)
 
 ``` php
+$doc = (new Document());
+$doc->html('<div class="example"></div>');
+```
+
+*Result:*
+
+``` html
+<div class="example"></div>
+```
+
+##### Example #1 (Get)
+
+``` php
+$doc = (new Document())->html('<div class="example"></div>');
+$doc->find('div')->append('<span>Example!</span>');
+echo $doc->html();
+```
+
+*Result:*
+
+``` html
+<div class="example"><span>Example!</span></div>
 ```
 
 ---
@@ -383,6 +405,14 @@ self prepend(string|NodeList|\DOMNode|callable $input)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
+$doc->find('div')->prepend('<strong>Prepended! </strong>');
+```
+
+*Result:*
+
+``` html
+<div><strong>Prepended! </strong>The quick brown fox jumps over the lazy dog</div>
 ```
 
 ---
@@ -396,6 +426,13 @@ self prependTo(string|NodeList|\DOMNode $selector)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
+$doc->create('<strong>Prepended! </strong>')->appendTo('div');
+```
+
+*Result:*
+``` html
+<div><strong>Prepended! </strong>The quick brown fox jumps over the lazy dog</div>
 ```
 
 ---
@@ -409,6 +446,13 @@ self remove([string $selector = null])
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<ul><li class="first"></li><li class="second"></li></ul>');
+$doc->find('.first').remove();
+```
+
+*Result:*
+``` html
+<ul><li class="second"></li></ul>
 ```
 
 ---
@@ -422,6 +466,13 @@ self removeAttr(string $name)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div class="first second"></div>');
+$doc->find('div').removeAttr('class');
+```
+
+*Result:*
+``` html
+<div></div>
 ```
 
 ---
@@ -435,6 +486,13 @@ self removeClass(string|callable $class)
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div class="first second"></div>');
+$doc->find('div').removeClass('first');
+```
+
+*Result:*
+``` html
+<div class="second"></div>
 ```
 
 ---
