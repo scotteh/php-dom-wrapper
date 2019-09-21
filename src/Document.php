@@ -147,7 +147,7 @@ class Document extends \DOMDocument
             $html = '<domwrap></domwrap>' . $html;
         }
 
-        $result = parent::loadHTML($html, $options);
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $html, $options);
 
         // Do our re-shuffling of nodes.
         if ($this->libxmlOptions & LIBXML_HTML_NOIMPLIED) {
