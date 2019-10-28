@@ -164,7 +164,7 @@ class Document extends \DOMDocument
     private function getCharset(string $html): ?string {
         $charset = null;
 
-        if (preg_match('@<meta.*?charset=["]?([^"\s]+)@im', $html, $matches)) {
+        if (preg_match('@<meta.*?charset=["\']?([^"\'\s>]+)@im', $html, $matches)) {
             $charset = strtoupper($matches[1]);
         }
 
