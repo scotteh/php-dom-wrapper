@@ -36,7 +36,7 @@ trait ManipulationTrait
      * @return string
      */
     public function __toString(): string {
-        return $this->getOuterHtml();
+        return $this->getOuterHtml(true);
     }
 
     /**
@@ -679,19 +679,35 @@ trait ManipulationTrait
     }
 
     /**
+     * @param int $isIncludeAll
+     *
      * @return string
      */
-    public function getOuterHtml(): string {
-        return $this->document()->saveHTML(
-            $this->collection()->first()
-        );
+    public function getOuterHtml(bool $isIncludeAll = false): string {
+        $nodes = $this->collection();
+
+        if (!$isIncludeAll) {
+            $nodes = $this->newNodeList([$nodes->first()]);
+        }
+
+        return $nodes->reduce(function($carry, $node) {
+            return $carry . $this->document()->saveHTML($node);
+        }, '');
     }
 
     /**
+     * @param int $isIncludeAll
+     *
      * @return string
      */
-    public function getHtml(): string {
-        return $this->collection()->first()->contents()->reduce(function($carry, $node) {
+    public function getHtml(bool $isIncludeAll = false): string {
+        $nodes = $this->collection();
+
+        if (!$isIncludeAll) {
+            $nodes = $this->newNodeList([$nodes->first()]);
+        }
+
+        return $nodes->contents()->reduce(function($carry, $node) {
             return $carry . $this->document()->saveHTML($node);
         }, '');
     }
