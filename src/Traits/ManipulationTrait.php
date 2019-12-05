@@ -399,13 +399,7 @@ trait ManipulationTrait
             return '';
         }
 
-        $result = $node->getAttribute($name);
-
-        if (empty($result)) {
-            return '';
-        }
-
-        return $result;
+        return $node->getAttribute($name);
     }
 
     /**
