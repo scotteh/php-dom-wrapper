@@ -16,25 +16,10 @@ PHP DOM Wrapper is a simple DOM wrapper library to manipulate and traverse HTML 
 
 ## Install
 
-This library is designed to be installed via [Composer](https://getcomposer.org/doc/).
+Install with [Composer](https://getcomposer.org/doc/).
 
-Add the dependency into your projects composer.json.
 ```
-{
-  "require": {
-    "scotteh/php-dom-wrapper": "^1.0"
-  }
-}
-```
-
-Download the composer.phar
-``` bash
-curl -sS https://getcomposer.org/installer | php
-```
-
-Install the library.
-``` bash
-php composer.phar install
+composer require scotteh/php-dom-wrapper
 ```
 
 ## Autoloading
@@ -42,7 +27,7 @@ php composer.phar install
 This library requires an autoloader, if you aren't already using one you can include [Composers autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading).
 
 ``` php
-require('vendor/autoload.php');
+require 'vendor/autoload.php';
 ```
 
 ## Methods
@@ -736,7 +721,7 @@ $anchorTags = $nodes->has('span');
 bool is(string|NodeList|\DOMNode|callable $input)
 ```
     
-Test is nodes from the current set match the input. 
+Test if nodes from the current set match the input. 
 
 ##### Example
 
