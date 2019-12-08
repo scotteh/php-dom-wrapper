@@ -23,6 +23,9 @@ class Document extends \DOMDocument
     /** @var int */
     protected $libxmlOptions = 0;
 
+    /** @var string|null */
+    protected $documentEncoding = null;
+
     public function __construct(string $version = '1.0', string $encoding = 'UTF-8') {
         parent::__construct($version, $encoding);
 
@@ -121,9 +124,18 @@ class Document extends \DOMDocument
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
+        $this->detectEncoding($html);
+
         $html = $this->convertToUtf8($html);
 
         $this->loadHTML($html, $this->libxmlOptions);
+
+        // Remove <?xml ...> processing instruction.
+        $this->contents()->each(function($node) {
+            if ($node instanceof ProcessingInstruction && $node->nodeName == 'xml') {
+                $node->remove();
+            }
+        });
 
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
@@ -134,6 +146,7 @@ class Document extends \DOMDocument
     /**
      * @param string $html
      * @param int $options
+     *
      * @return bool
      */
     public function loadHTML($html, $options = 0): bool {
@@ -146,6 +159,8 @@ class Document extends \DOMDocument
         if ($options & LIBXML_HTML_NOIMPLIED) {
             $html = '<domwrap></domwrap>' . $html;
         }
+
+        $html = '<?xml encoding="' . ($this->getEncoding() ?? 'UTF-8') . '">' . $html;
 
         $result = parent::loadHTML($html, $options);
 
@@ -161,26 +176,65 @@ class Document extends \DOMDocument
         return $result;
     }
 
+    /*
+     * @param $encoding string|null
+     */
+    public function setEncoding(string $encoding = null) {
+        $this->documentEncoding = $encoding;
+    }
+
+    /*
+     * @return string|null
+     */
+    public function getEncoding(): ?string {
+        return $this->documentEncoding;
+    }
+
+    /*
+     * @param $html string
+     *
+     * @return string|null
+     */
     private function getCharset(string $html): ?string {
         $charset = null;
 
         if (preg_match('@<meta.*?charset=["\']?([^"\'\s>]+)@im', $html, $matches)) {
-            $charset = strtoupper($matches[1]);
+            $charset = mb_strtoupper($matches[1]);
         }
 
         return $charset;
     }
-        
-    private function convertToUtf8(string $html): string {
-        if (mb_detect_encoding($html, mb_detect_order(), true) === 'UTF-8') {
-            return $html;
+
+    /*
+     * @param $html string
+     */
+    private function detectEncoding(string $html) {
+        $charset = $this->getEncoding();
+
+        if (is_null($charset)) {
+            $charset = $this->getCharset($html);
         }
 
-        $charset = $this->getCharset($html);
+        $detectedCharset = mb_detect_encoding($html, mb_detect_order(), true);
+
+        if ($charset === null && $detectedCharset == 'UTF-8') {
+            $charset = $detectedCharset;
+        }
+
+        $this->setEncoding($charset);
+    }
+
+    /*
+     * @param $html string
+     *
+     * @return string
+     */
+    private function convertToUtf8(string $html): string {
+        $charset = $this->getEncoding();
 
         if ($charset !== null) {
             $html = preg_replace('@(charset=["]?)([^"\s]+)([^"]*["]?)@im', '$1UTF-8$3', $html);
-            $mbHasCharset = in_array($charset, array_map('strtoupper', mb_list_encodings()));
+            $mbHasCharset = in_array($charset, array_map('mb_strtoupper', mb_list_encodings()));
 
             if ($mbHasCharset) {
                 $html = mb_convert_encoding($html, 'UTF-8', $charset);

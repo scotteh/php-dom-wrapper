@@ -108,6 +108,7 @@ trait ManipulationTrait
     protected function nodesFromHtml($html): NodeList {
         $class = get_class($this->document());
         $doc = new $class();
+        $doc->setEncoding($this->document()->getEncoding());
         $nodes = $doc->html($html)->find('body > *');
 
         return $nodes;
