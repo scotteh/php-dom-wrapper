@@ -16,7 +16,7 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
     public function testDocumentParent() {
         $doc = $this->document('<html></html>');
 
-        $this->assertSame(null, $doc->parent());
+        $this->assertNull($doc->parent());
     }
 
     public function testDocumentParents() {
@@ -35,6 +35,6 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         $doc = $this->document('<html></html>');
         $clone = $doc->_clone();
 
-        $this->assertSame(null, $clone);
+        $this->assertNull($clone);
     }
 }

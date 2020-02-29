@@ -26,7 +26,7 @@ class EqTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\DOMNode', $nodes->eq(3));
         $this->assertSame('div', $nodes->eq(3)->nodeName);
 
-        $this->assertSame(null, $nodes->eq(4));
+        $this->assertNull($nodes->eq(4));
 
         $this->assertInstanceOf('\DOMNode', $nodes->eq(-1));
         $this->assertSame('div', $nodes->eq(-1)->nodeName);
@@ -41,6 +41,6 @@ class EqTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('div', $nodes->eq(-4)->nodeName);
         $this->assertSame('example', $nodes->eq(-4)->attr('class'));
 
-        $this->assertSame(null, $nodes->eq(-5));
+        $this->assertNull($nodes->eq(-5));
     }
 }
