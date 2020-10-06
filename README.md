@@ -150,17 +150,24 @@ $doc->find('p')->addClass('text-center');
 self after(string|NodeList|\DOMNode|callable $input)
 ```
 
+Insert the argument as a sibling directly after each of the nodes operated on.
+
 ##### Example
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
-$doc->find('li')->after('<span> (after)</span>'); 
+$doc->find('li')->first()->after('<li>first-and-a-half</li>');
+
 ```
 
 *Result:*
 
 ``` html
-<ul><li>first<span> (after)</span></li><li>second<span> (after)</span></li></ul>
+<ul>
+    <li>first</li>
+    <li>first-and-a-half</li>
+    <li>second</li>
+</ul>
 ```
 
 ---
@@ -246,17 +253,23 @@ text-center
 self before(string|NodeList|\DOMNode|callable $input)
 ```
 
+Insert the argument as a sibling just before each of the nodes operated on.
+
 ##### Example
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
-$doc->find('li')->after('<span>(before) </span>'); 
+doc->find('li')->first()->before('<li>zeroth</li>');
 ```
 
 *Result:*
 
 ``` html
-<ul><li><span>(before) </span>first</li><li><span>(before) </span>second</li></ul>
+<ul>
+    <li>zeroth</li>
+    <li>first</li>
+    <li>second</li>
+</ul>
 ```
 
 ---
