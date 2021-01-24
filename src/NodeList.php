@@ -46,7 +46,7 @@ class NodeList extends NodeCollection
         try {
             $result = $this->__manipulationCall($name, $arguments);
         } catch (\BadMethodCallException $e) {
-            if (!method_exists($this->first(), $name)) {
+            if (!$this->first() || !method_exists($this->first(), $name)) {
                 throw new \BadMethodCallException("Call to undefined method " . get_class($this) . '::' . $name . "()");
             }
 

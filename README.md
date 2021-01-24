@@ -1,5 +1,5 @@
 # PHP DOM Wrapper
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/?branch=master) [![Build Status](https://travis-ci.org/scotteh/php-dom-wrapper.svg?branch=master)](https://travis-ci.org/scotteh/php-dom-wrapper)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/?branch=master)
 
 ## Intro
 
@@ -37,22 +37,22 @@ require 'vendor/autoload.php';
 | Method | jQuery Equivalent *(if different)* |
 |--------|------------------------------|
 | [addClass()](#addClass)    |
-| [after()](#after)       |
-| [append()](#append)      |
+| [follow()](#follow)       | *after()* |
+| [appendWith()](#appendWith)      | *append()* |
 | [appendTo()](#appendTo)    |
 | [attr()](#attr)        |
-| [before()](#before)      |
 | [clone()](#clone)       |
+| [destroy()](#destroy)      | *remove()* |
 | [detach()](#detach)      |
 | [empty()](#empty)       |
 | [hasClass()](#hasClass)    |
 | [html()](#html)        |
-| [prepend()](#prepend)     |
+| [precede()](#precede)      | *before()* |
+| [prependWith()](#prependWith)     | *prepend()* |
 | [prependTo()](#prependTo)   |
-| [remove()](#remove)      |
 | [removeAttr()](#removeAttr)  |
 | [removeClass()](#removeClass) |
-| [replaceWith()](#replaceWith) |
+| [substituteWith()](#substituteWith) | *replaceWith()* |
 | [text()](#text)        |
 | [unwrap()](#unwrap)      |
 | [wrap()](#wrap)        |
@@ -111,7 +111,7 @@ $nodes = $doc->find('li');
 var_dump($nodes->count());
 
 // Append as a child node to each <li>
-$nodes->append('<b>!</b>');
+$nodes->appendWith('<b>!</b>');
 
 // Returns: <html><body><ul><li>First<b>!</b></li><li>Second<b>!</b></li><li>Third<b>!</b></li></ul></body></html>
 var_dump($doc->html());
@@ -144,10 +144,10 @@ $doc->find('p')->addClass('text-center');
 
 ---
 
-#### after
+#### follow
 
 ```
-self after(string|NodeList|\DOMNode|callable $input)
+self follow(string|NodeList|\DOMNode|callable $input)
 ```
 
 Insert the argument as a sibling directly after each of the nodes operated on.
@@ -156,7 +156,7 @@ Insert the argument as a sibling directly after each of the nodes operated on.
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
-$doc->find('li')->first()->after('<li>first-and-a-half</li>');
+$doc->find('li')->first()->follow('<li>first-and-a-half</li>');
 
 ```
 
@@ -172,17 +172,17 @@ $doc->find('li')->first()->after('<li>first-and-a-half</li>');
 
 ---
 
-#### append
+#### appendWith
 
 ```
-self append(string|NodeList|\DOMNode|callable $input)
+self appendWith(string|NodeList|\DOMNode|callable $input)
 ```
 
 ##### Example
 
 ``` php
 $doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
-$doc->find('div')->append('<strong> Appended!</strong>');
+$doc->find('div')->appendWith('<strong> Appended!</strong>');
 ```
 
 *Result:*
@@ -247,10 +247,10 @@ text-center
 
 ---
 
-#### before
+#### precede
 
 ```
-self before(string|NodeList|\DOMNode|callable $input)
+self precede(string|NodeList|\DOMNode|callable $input)
 ```
 
 Insert the argument as a sibling just before each of the nodes operated on.
@@ -259,7 +259,7 @@ Insert the argument as a sibling just before each of the nodes operated on.
 
 ``` php
 $doc = (new Document())->html('<ul><li>first</li><li>second</li></ul>');
-doc->find('li')->first()->before('<li>zeroth</li>');
+doc->find('li')->first()->precede('<li>zeroth</li>');
 ```
 
 *Result:*
@@ -291,6 +291,26 @@ $doc->find('div')->clone()->appendTo('ul');
 
 ``` html
 <ul><li>Item</li><li>Item</li></ul>
+```
+
+---
+
+#### destroy
+
+```
+self destroy([string $selector = null])
+```
+
+##### Example
+
+``` php
+$doc = (new Document())->html('<ul><li class="first"></li><li class="second"></li></ul>');
+$doc->find('.first')->destroy();
+```
+
+*Result:*
+``` html
+<ul><li class="second"></li></ul>
 ```
 
 ---
@@ -382,7 +402,7 @@ $doc->html('<div class="example"></div>');
 
 ``` php
 $doc = (new Document())->html('<div class="example"></div>');
-$doc->find('div')->append('<span>Example!</span>');
+$doc->find('div')->appendWith('<span>Example!</span>');
 echo $doc->html();
 ```
 
@@ -394,17 +414,17 @@ echo $doc->html();
 
 ---
 
-#### prepend
+#### prependWith
 
 ```
-self prepend(string|NodeList|\DOMNode|callable $input)
+self prependWith(string|NodeList|\DOMNode|callable $input)
 ```
 
 ##### Example
 
 ``` php
 $doc = (new Document())->html('<div>The quick brown fox jumps over the lazy dog</div>');
-$doc->find('div')->prepend('<strong>Prepended! </strong>');
+$doc->find('div')->prependWith('<strong>Prepended! </strong>');
 ```
 
 *Result:*
@@ -431,26 +451,6 @@ $doc->create('<strong>Prepended! </strong>')->appendTo('div');
 *Result:*
 ``` html
 <div><strong>Prepended! </strong>The quick brown fox jumps over the lazy dog</div>
-```
-
----
-
-#### remove
-
-```
-self remove([string $selector = null])
-```
-
-##### Example
-
-``` php
-$doc = (new Document())->html('<ul><li class="first"></li><li class="second"></li></ul>');
-$doc->find('.first').remove();
-```
-
-*Result:*
-``` html
-<ul><li class="second"></li></ul>
 ```
 
 ---
@@ -495,10 +495,10 @@ $doc->find('div').removeClass('first');
 
 ---
 
-#### replaceWith
+#### substituteWith
 
 ```
-self replaceWith(string|NodeList|\DOMNode|callable $input)
+self substituteWith(string|NodeList|\DOMNode|callable $input)
 ```
 
 ##### Example

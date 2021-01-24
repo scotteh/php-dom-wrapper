@@ -93,7 +93,7 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function replaceWith($newNode): self {
+    public function substituteWith($newNode): self {
         $this->replaceChild($newNode, $this);
 
         return $this;
@@ -133,7 +133,7 @@ class Document extends \DOMDocument
         // Remove <?xml ...> processing instruction.
         $this->contents()->each(function($node) {
             if ($node instanceof ProcessingInstruction && $node->nodeName == 'xml') {
-                $node->remove();
+                $node->destroy();
             }
         });
 
@@ -167,7 +167,7 @@ class Document extends \DOMDocument
         // Do our re-shuffling of nodes.
         if ($this->libxmlOptions & LIBXML_HTML_NOIMPLIED) {
             $this->children()->first()->contents()->each(function($node){
-                $this->append($node);
+                $this->appendWith($node);
             });
 
             $this->removeChild($this->children()->first());
