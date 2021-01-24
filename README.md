@@ -514,9 +514,25 @@ string|self text([string|NodeList|\DOMNode|callable $input = null])
 self unwrap()
 ```
 
+Unwrap each current node by removing its parent, replacing the parent
+with its children (i.e. the current node and its siblings).
+
+Note that each node is operated on separately, so when you call
+`unwrap()` on a `NodeList` containing two siblings, *two* parents will
+be removed.
+
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<div id="outer"><div id="first"/><div id="second"/></div>');
+$doc->find('#first')->unwrap();
+```
+
+*Result:*
+
+``` html
+<div id="first"></div>
+<div id="second"></div>
 ```
 
 ---
@@ -527,10 +543,40 @@ self unwrap()
 self wrap(string|NodeList|\DOMNode|callable $input)
 ```
 
+Wrap the current node or nodes in the given structure.
+
+The wrapping structure can be nested, but should only contain one node
+on each level (any extra siblings are removed). The outermost node
+replaces the node operated on, while the node operated on is put into
+the innermost node.
+
+If called on a `NodeList`, each of nodes in the list will be separately
+wrapped. When such a list contains multiple nodes, the argument to
+wrap() cannot be a `NodeList` or `\DOMNode`, since those can be used
+to wrap a node only once. A string or callable returning a string or a
+unique `NodeList` or `\DomNode` every time can be used in this case.
+
+When a callable is passed, it is called once for each node operated on,
+passing that node and its index. The callable should return either a
+string, or a unique `NodeList` or `\DOMNode` ever time it is called.
+
+Note that this returns the original node like all other methods, not the
+(new) node(s) wrapped around it.
+
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<span>foo<span><span>bar</span>');
+$doc->find->('span')->wrap('<div><p/></div>');
 ```
+
+*Result:*
+
+``` html
+<div><p><span>foo</span></p></div>
+<div><p><span>bar</span></p></div>
+```
+
 
 ---
 
@@ -540,9 +586,28 @@ self wrap(string|NodeList|\DOMNode|callable $input)
 self wrapAll(string|NodeList|\DOMNode|callable $input)
 ```
 
+Like [wrap()](#wrap), but when operating on multiple nodes, all of them
+will be wrapped together in a single instance of the given structure,
+rather than each of them individually.
+
+Note that the wrapping structure replaces the first node operated on, so
+if the other nodes operated on are not siblings of the first, they will
+be moved inside the document.
+
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<span>foo<span><span>bar</span>');
+$doc->find->('span')->wrapAll('<div><p/></div>');
+```
+
+*Result:*
+
+``` html
+<div><p>
+    <span>foo</span>
+    <span>bar</span>
+</p></div>
 ```
 
 ---
@@ -553,9 +618,21 @@ self wrapAll(string|NodeList|\DOMNode|callable $input)
 self wrapInner(string|NodeList|\DOMNode|callable $input)
 ```
 
-##### Example   
+Like [wrap()](#wrap), but rather than wrapping the nodes that are being
+operated on, this wraps their contents.
+
+##### Example
 
 ``` php
+$doc = (new Document())->html('<span>foo<span><span>bar</span>');
+$doc->find('span')->wrapInner('<b><i/></b>');
+```
+
+*Result:*
+
+``` html
+<span><b><i>foo</i></b></span>
+<span><b><i>bar</i></b></span>
 ```
 
 ---
