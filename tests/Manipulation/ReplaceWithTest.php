@@ -7,32 +7,32 @@ class ReplaceWithTest extends \PHPUnit\Framework\TestCase
     use \DOMWrap\Tests\Harness\TestTrait;
 
     public function testReplaceWithNode() {
-        $expected = $this->document('<html><div class="inserted">hey! new content</div></html>');
+        $expected = '<html><body><div class="inserted">hey! new content</div></body></html>';
 
         $doc = $this->document('<html><div class="test">some test content</div></html>');
         $nodes = $doc->find('.test');
-        $nodes->first()->replaceWith('<div class="inserted">hey! new content</div>');
+        $nodes->first()->substituteWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testReplaceWithNodeList() {
-        $expected = $this->document('<html><div class="inserted">hey! new content</div><div class="inserted">hey! new content</div></html>');
+        $expected = '<html><body><div class="inserted">hey! new content</div><div class="inserted">hey! new content</div></body></html>';
 
         $doc = $this->document('<html><div class="test">some test content</div><div class="test">some test content</div></html>');
         $nodes = $doc->find('.test');
-        $nodes->replaceWith('<div class="inserted">hey! new content</div>');
+        $nodes->substituteWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testReplaceWithNodeListNested() {
-        $expected = $this->document('<html><article><div class="inserted">hey! new content</div></article><div class="inserted">hey! new content</div></html>');
+        $expected = '<html><body><article><div class="inserted">hey! new content</div></article><div class="inserted">hey! new content</div></body></html>';
 
         $doc = $this->document('<html><article><div class="test">some test content</div></article><a class="test">some test content</a></html>');
         $nodes = $doc->find('.test');
-        $nodes->replaceWith('<div class="inserted">hey! new content</div>');
+        $nodes->substituteWith('<div class="inserted">hey! new content</div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 }

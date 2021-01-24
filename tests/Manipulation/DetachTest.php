@@ -7,11 +7,11 @@ class DetachTest extends \PHPUnit\Framework\TestCase
     use \DOMWrap\Tests\Harness\TestTrait;
 
     public function testDetachNode() {
-        $expected = $this->document('<html><article></article></html>');
+        $expected = '<html><body><article></article></body></html>';
         $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
         $nodes = $doc->find('article > a')->first()->detach();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
         $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(1, $nodes->count());
 
@@ -22,11 +22,11 @@ class DetachTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testDetachNodeSelect() {
-        $expected = $this->document('<html><body></body></html>');
+        $expected = '<html><body></body></html>';
         $doc = $this->document('<html><body><article class="a"><a href="http://example.org/">this is a test</a></article></body></html>');
         $nodes = $doc->find('article')->first()->detach('.a');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
         $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(1, $nodes->count());
 
@@ -36,11 +36,11 @@ class DetachTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testDetachNodeList() {
-        $expected = $this->document('<html><section></section><section></section></html>');
+        $expected = '<html><body><section></section><section></section></body></html>';
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
         $nodes = $doc->find('a, p')->detach();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
         $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(2, $nodes->count());
 
@@ -55,11 +55,11 @@ class DetachTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testDetachNodeListNested() {
-        $expected = $this->document('<html><div></div></html>');
+        $expected = '<html><body><div></div></body></html>';
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a><em>example!</em></section><div><article><section><p>test!</p></section></article></div></html>');
         $nodes = $doc->find('article, section')->detach();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
         $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(3, $nodes->count());
 
@@ -77,11 +77,11 @@ class DetachTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testDetachNodeListDoesntExist() {
-        $expected = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
+        $expected = '<html><body><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></body></html>';
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
         $nodes = $doc->find('article')->detach();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
         $this->assertInstanceOf('\\DOMWrap\\NodeList', $nodes);
         $this->assertEquals(0, $nodes->count());
     }

@@ -7,44 +7,44 @@ class BeforeTest extends \PHPUnit\Framework\TestCase
     use \DOMWrap\Tests\Harness\TestTrait;
 
     public function testBeforeNode() {
-        $expected = $this->document('<html><div class="inserted"></div><div class="test"></div></html>');
+        $expected = '<html><body><div class="inserted"></div><div class="test"></div></body></html>';
 
         $doc = $this->document('<html><div class="test"></div></html>');
         $nodes = $doc->find('.test');
-        $nodes->first()->before('<div class="inserted"></div>');
+        $nodes->first()->precede('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testBeforeNodeList() {
-        $expected = $this->document('<html><div class="inserted"></div><div class="test"></div><div class="inserted"></div><div class="test"></div></html>');
+        $expected = '<html><body><div class="inserted"></div><div class="test"></div><div class="inserted"></div><div class="test"></div></body></html>';
 
         $doc = $this->document('<html><div class="test"></div><div class="test"></div></html>');
         $nodes = $doc->find('.test');
-        $nodes->before('<div class="inserted"></div>');
+        $nodes->precede('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testBeforeNodeListNested() {
-        $expected = $this->document('<html><article><div class="inserted"></div><div class="test"></div></article><div class="inserted"></div><a class="test"></a></html>');
+        $expected = '<html><body><article><div class="inserted"></div><div class="test"></div></article><div class="inserted"></div><a class="test"></a></body></html>';
 
         $doc = $this->document('<html><article><div class="test"></div></article><a class="test"></a></html>');
         $nodes = $doc->find('.test');
-        $nodes->before('<div class="inserted"></div>');
+        $nodes->precede('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testBeforeNodeClosure() {
-        $expected = $this->document('<html><article><div class="inserted"></div><div class="test"></div></article><div class="inserted"></div><a class="test"></a></html>');
+        $expected = '<html><body><article><div class="inserted"></div><div class="test"></div></article><div class="inserted"></div><a class="test"></a></body></html>';
 
         $doc = $this->document('<html><article><div class="test"></div></article><a class="test"></a></html>');
         $nodes = $doc->find('.test');
-        $nodes->before(function($node, $index) {
+        $nodes->precede(function($node, $index) {
             return '<div class="inserted"></div>';
         });
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 }

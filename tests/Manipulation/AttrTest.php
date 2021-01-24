@@ -47,42 +47,42 @@ class AttrTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testSetAttrNode() {
-        $expected = $this->document('<html><div class="test example"><article><a href="http://example.org/">this is a test</a></article></div></html>');
+        $expected = '<html><body><div class="test example"><article><a href="http://example.org/">this is a test</a></article></div></body></html>';
         $doc = $this->document('<html><div><article><a href="http://example.org/">this is a test</a></article></div></html>');
         $doc->find('div')->attr('class', 'test example');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testSetAttrNodeEmpty() {
-        $expected = $this->document('<html><div></div></html>');
+        $expected = '<html><body><div></div></body></html>';
         $doc = $this->document('<html><div></div></html>');
         $doc->find('.test')->attr('class', 'test');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testSetAttrNodeExist() {
-        $expected = $this->document('<html><div class="example"></div></html>');
+        $expected = '<html><body><div class="example"></div></body></html>';
         $doc = $this->document('<html><div class="test"></div></html>');
         $doc->find('.test')->attr('class', 'example');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testSetAttrNodeList() {
-        $expected = $this->document('<html><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="example test"><span><em>testing 123..!</em></span></section></html>');
+        $expected = '<html><body><div class="example test"><article><a href="http://example.org/">this is a test</a></article></div><section class="example test"><span><em>testing 123..!</em></span></section></body></html>';
         $doc = $this->document('<html><div><article><a href="http://example.org/">this is a test</a></article></div><section><span><em>testing 123..!</em></span></section></html>');
         $doc->find('div, section')->attr('class', 'example test');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testSetAttrNodeListDoesntExist() {
-        $expected = $this->document('<html><div class="test"><article><a href="http://example.org/">this is a test</a></article></div><section><span><em>testing 123..!</em></span></section></html>');
+        $expected = '<html><body><div class="test"><article><a href="http://example.org/">this is a test</a></article></div><section><span><em>testing 123..!</em></span></section></body></html>';
         $doc = $this->document('<html><div class="test"><article><a href="http://example.org/">this is a test</a></article></div><section><span><em>testing 123..!</em></span></section></html>');
         $doc->find('.example')->attr('class', 'example');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 }

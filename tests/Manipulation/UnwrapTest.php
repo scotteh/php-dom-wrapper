@@ -7,35 +7,35 @@ class UnwrapTest extends \PHPUnit\Framework\TestCase
     use \DOMWrap\Tests\Harness\TestTrait;
 
     public function testUnwrapNode() {
-        $expected = $this->document('<html><a href="http://example.org/">this is a test</a></html>');
+        $expected = '<html><body><a href="http://example.org/">this is a test</a></body></html>';
         $doc = $this->document('<html><article><a href="http://example.org/">this is a test</a></article></html>');
         $doc->find('article > a')->first()->unwrap();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testUnwrapNodeList() {
-        $expected = $this->document('<html><a href="http://example.org/">this is a test</a><p>test!</p></html>');
+        $expected = '<html><body><a href="http://example.org/">this is a test</a><p>test!</p></body></html>';
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
         $doc->find('a, p')->unwrap();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testUnwrapNodeListNested() {
-        $expected = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
+        $expected = '<html><body><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></body></html>';
         $doc = $this->document('<html><em><section><a href="http://example.org/">this is a test</a></section><div><article><section><p>test!</p></section></article></div></em></html>');
         $doc->find('article, section')->unwrap();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testUnwrapNodeListDoesntExist() {
-        $expected = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
+        $expected = '<html><body><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></body></html>';
         $doc = $this->document('<html><section><a href="http://example.org/">this is a test</a></section><section><p>test!</p></section></html>');
         $doc->find('article')->unwrap();
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
 }

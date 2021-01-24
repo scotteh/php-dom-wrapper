@@ -7,44 +7,44 @@ class PrependTest extends \PHPUnit\Framework\TestCase
     use \DOMWrap\Tests\Harness\TestTrait;
 
     public function testPrependNode() {
-        $expected = $this->document('<html><div class="test"><div class="inserted"></div>some test content</div></html>');
+        $expected = '<html><body><div class="test"><div class="inserted"></div>some test content</div></body></html>';
 
         $doc = $this->document('<html><div class="test">some test content</div></html>');
         $nodes = $doc->find('.test');
-        $nodes->first()->prepend('<div class="inserted"></div>');
+        $nodes->first()->prependWith('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testPrependNodeList() {
-        $expected = $this->document('<html><div class="test"><div class="inserted"></div>some test content</div><div class="test"><div class="inserted"></div>some test content</div></html>');
+        $expected = '<html><body><div class="test"><div class="inserted"></div>some test content</div><div class="test"><div class="inserted"></div>some test content</div></body></html>';
 
         $doc = $this->document('<html><div class="test">some test content</div><div class="test">some test content</div></html>');
         $nodes = $doc->find('.test');
-        $nodes->prepend('<div class="inserted"></div>');
+        $nodes->prependWith('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testPrependNodeListNested() {
-        $expected = $this->document('<html><article><div class="test"><div class="inserted"></div>some test content</div></article><a class="test"><div class="inserted"></div>some test content</a></html>');
+        $expected = '<html><body><article><div class="test"><div class="inserted"></div>some test content</div></article><a class="test"><div class="inserted"></div>some test content</a></body></html>';
 
         $doc = $this->document('<html><article><div class="test">some test content</div></article><a class="test">some test content</a></html>');
         $nodes = $doc->find('.test');
-        $nodes->prepend('<div class="inserted"></div>');
+        $nodes->prependWith('<div class="inserted"></div>');
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 
     public function testPrependNodeClosure() {
-        $expected = $this->document('<html><article><div class="test"><div class="inserted"></div>some test content</div></article><a class="test"><div class="inserted"></div>some test content</a></html>');
+        $expected = '<html><body><article><div class="test"><div class="inserted"></div>some test content</div></article><a class="test"><div class="inserted"></div>some test content</a></body></html>';
 
         $doc = $this->document('<html><article><div class="test">some test content</div></article><a class="test">some test content</a></html>');
         $nodes = $doc->find('.test');
-        $nodes->prepend(function($node, $index) {
+        $nodes->prependWith(function($node, $index) {
             return '<div class="inserted"></div>';
         });
 
-        $this->assertEqualXMLStructure($expected->children()->first(), $doc->children()->first(), true);
+        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
     }
 }

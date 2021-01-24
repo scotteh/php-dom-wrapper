@@ -11,7 +11,7 @@ class CloneTest extends \PHPUnit\Framework\TestCase
         $nodes = $doc->find('.test');
         $clone = $nodes->first()->clone();
 
-        $this->assertEqualXMLStructure($doc->find('.test')->first(), $clone, true);
+        $this->assertXmlStringEqualsXmlString($doc->find('.test')->first()->html(), $clone->html());
     }
 
     public function testCloneNodeEmpty() {
@@ -19,7 +19,7 @@ class CloneTest extends \PHPUnit\Framework\TestCase
         $nodes = $doc->find('.test');
         $clone = $nodes->first()->clone();
 
-        $this->assertEqualXMLStructure($doc->find('.test')->first(), $clone, true);
+        $this->assertSame($doc->find('.test')->first()->html(), $clone->html());
     }
 
     public function testCloneNodeList() {
@@ -28,7 +28,7 @@ class CloneTest extends \PHPUnit\Framework\TestCase
         $clones = $nodes->clone();
 
         foreach ($clones as $key => $clone) {
-            $this->assertEqualXMLStructure($doc->find('.test')->eq($key), $clone, true);
+            $this->assertXmlStringEqualsXmlString($doc->find('.test')->eq($key)->html(), $clone->html());
         }
     }
 }
