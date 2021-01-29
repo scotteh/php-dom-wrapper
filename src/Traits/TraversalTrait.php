@@ -41,7 +41,11 @@ trait TraversalTrait
      * @return NodeList
      */
     public function find(string $selector, string $prefix = 'descendant::'): NodeList {
-        $converter = new CssSelectorConverter();
+        static $converter;
+
+        if (!isset($converter)) {
+            $converter = new CssSelectorConverter();
+        }
 
         return $this->findXPath($converter->toXPath($selector, $prefix));
     }
