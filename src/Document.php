@@ -122,23 +122,15 @@ class Document extends \DOMDocument
         }
 
         $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
-
-        $this->detectEncoding($html);
-
-        $html = $this->convertToUtf8($html);
-
-        $this->loadHTML($html, $this->libxmlOptions);
-
-        // Remove <?xml ...> processing instruction.
-        $this->contents()->each(function($node) {
-            if ($node instanceof ProcessingInstruction && $node->nodeName == 'xml') {
-                $node->destroy();
-            }
-        });
-
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
+        if (\PHP_VERSION_ID < 80000) {
+            $disableEntities = libxml_disable_entity_loader(true);
+            $this->composeXmlNode($html);
+            libxml_use_internal_errors($internalErrors);
+            libxml_disable_entity_loader($disableEntities);
+        } else {
+            $this->composeXmlNode($html);
+            libxml_use_internal_errors($internalErrors);
+        }
 
         return $this;
     }
@@ -256,5 +248,24 @@ class Document extends \DOMDocument
         }
 
         return $html;
+    }
+
+    /**
+     * @param $html
+     */
+    private function composeXmlNode($html)
+    {
+        $this->detectEncoding($html);
+
+        $html = $this->convertToUtf8($html);
+
+        $this->loadHTML($html, $this->libxmlOptions);
+
+        // Remove <?xml ...> processing instruction.
+        $this->contents()->each(function($node) {
+            if ($node instanceof ProcessingInstruction && $node->nodeName == 'xml') {
+                $node->destroy();
+            }
+        });
     }
 }
