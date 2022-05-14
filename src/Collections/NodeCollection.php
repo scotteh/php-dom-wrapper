@@ -53,6 +53,7 @@ class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset) {
         return isset($this->nodes[$offset]) ? $this->nodes[$offset] : null;
     }
@@ -123,6 +124,7 @@ class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function current() {
         return current($this->nodes);
     }
@@ -133,6 +135,7 @@ class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function key() {
         return key($this->nodes);
     }
@@ -143,6 +146,7 @@ class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function next() {
         return next($this->nodes);
     }
@@ -153,6 +157,7 @@ class NodeCollection implements \Countable, \ArrayAccess, \RecursiveIterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function rewind() {
         return reset($this->nodes);
     }
