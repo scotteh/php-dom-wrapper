@@ -1,5 +1,4 @@
 # PHP DOM Wrapper
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scotteh/php-dom-wrapper/?branch=master)
 
 ## Intro
 
