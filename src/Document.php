@@ -244,7 +244,7 @@ class Document extends \DOMDocument
         }
 
         if ($charset === null) {
-            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+            $html = htmlspecialchars_decode(mb_encode_numericentity(htmlentities($html, ENT_QUOTES, 'UTF-8'), [0x80, 0x10FFFF, 0, ~0], 'UTF-8'));
         }
 
         return $html;
