@@ -18,20 +18,19 @@ class CreateTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testCreateNodeList() {
-// @FIXME Newline
-        $expected = '<html><body><ul><li>a<ul><li>a</li><li>a</li></ul>'."\n".'</li><li>a<ul><li>a</li><li>a</li></ul>'."\n".'</li></ul></body></html>';
+        $expected = '<html><body><ul><li>a<ul><li>a</li><li>a</li></ul></li><li>a<ul><li>a</li><li>a</li></ul></li></ul></body></html>';
 
         $doc = $this->document('<html><body><ul><li>a</li><li>a</li></ul></body></html>');
         $newNode = $doc->create($doc->find('ul'));
         $nodes = $doc->find('li');
         $nodes->appendWith($newNode);
 
-        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
+        // @NOTE str_replace is a temporary fix for PHP <= 8.0 where whitespace is added into XML.
+        $this->assertXmlStringEqualsXmlString($expected, str_replace("\n", '', $doc->html()));
     }
 
     public function testCreateDOMElement() {
-// @FIXME Newline
-        $expected = '<html><body><ul><li>a<span>xyz</span>'."\n".'</li><li>a<span>xyz</span>'."\n".'</li></ul></body></html>';
+        $expected = '<html><body><ul><li>a<span>xyz</span></li><li>a<span>xyz</span></li></ul></body></html>';
 
         $doc = $this->document('<html><body><ul><li>a</li><li>a</li></ul></body></html>');
         $input = new \DOMElement('span');
@@ -40,7 +39,8 @@ class CreateTest extends \PHPUnit\Framework\TestCase
         $nodes = $doc->find('li');
         $nodes->appendWith($newNode);
 
-        $this->assertXmlStringEqualsXmlString($expected, $doc->html());
+        // @NOTE str_replace is a temporary fix for PHP <= 8.0 where whitespace is added into XML.
+        $this->assertXmlStringEqualsXmlString($expected, str_replace("\n", '', $doc->html()));
     }
 
 }
