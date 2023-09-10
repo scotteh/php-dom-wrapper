@@ -109,7 +109,7 @@ trait ManipulationTrait
         $class = get_class($this->document());
         $doc = new $class();
         $doc->setEncoding($this->document()->getEncoding());
-        $nodes = $doc->html($html)->find('body > *');
+        $nodes = $doc->html($html)->find('body')->contents();
 
         return $nodes;
     }
