@@ -16,6 +16,8 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
  */
 trait TraversalTrait
 {
+    protected static $cssSelectorConverter;
+
     /**
      * @param iterable $nodes
      *
@@ -41,9 +43,11 @@ trait TraversalTrait
      * @return NodeList
      */
     public function find(string $selector, string $prefix = 'descendant::'): NodeList {
-        $converter = new CssSelectorConverter();
+        if (!self::$cssSelectorConverter) {
+            self::$cssSelectorConverter = new CssSelectorConverter();
+        }
 
-        return $this->findXPath($converter->toXPath($selector, $prefix));
+        return $this->findXPath(self::$cssSelectorConverter->toXPath($selector, $prefix));
     }
 
     /**
