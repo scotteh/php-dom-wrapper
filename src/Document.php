@@ -141,7 +141,7 @@ class Document extends \DOMDocument
      *
      * @return bool
      */
-    public function loadHTML($html, $options = 0): bool {
+    public function loadHTML(string $html, int $options = 0): bool {
         // Fix LibXML's crazy-ness RE root nodes
         // While importing HTML using the LIBXML_HTML_NOIMPLIED option LibXML insists
         //  on having one root node. All subsequent nodes are appended to this first node.
