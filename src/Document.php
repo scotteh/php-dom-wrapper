@@ -21,7 +21,7 @@ class Document extends \DOMDocument
     use ManipulationTrait;
 
     /** @var int */
-    protected $libxmlOptions = 0;
+    protected $libxmlOptions = LIBXML_NONET | LIBXML_HTML_NODEFDTD;
 
     /** @var string|null */
     protected $documentEncoding = null;
