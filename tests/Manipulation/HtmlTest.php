@@ -76,4 +76,14 @@ class HtmlTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($expected, trim($html));
     }
+
+    public function testHtmlGetDocumentLibxml2AttributeUndoEncoding() {
+        // Argument order matches the order the attributes are listed in the find() inside Document::saveHTML()
+        $expected = '<html><body><a example="abc 123" src="{{example}}" href="{{example}}" action="{{example}}" name="{{example}}">this is a test</a></body></html>';
+        $doc = $this->document('<html><body><a example="abc 123" src="{{example}}" href="{{example}}" action="{{example}}" name="{{example}}">this is a test</a></body></html>');
+
+        $html = $doc->html();
+
+        $this->assertSame($expected, trim($html));
+    }
 }

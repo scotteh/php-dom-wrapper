@@ -168,6 +168,75 @@ class Document extends \DOMDocument
         return $result;
     }
 
+    /**
+     * @param \DOMNode $node
+     *
+     * @return string|bool
+     */
+    #[\ReturnTypeWillChange]
+    public function saveHTML(\DOMNode $node = null) {
+        $target = $node ?: $this;
+
+        // Undo any url encoding of attributes automatically applied by LibXML.
+        // See htmlAttrDumpOutput() in:
+        //    https://github.com/GNOME/libxml2/blob/master/HTMLtree.c
+        $i = 0;
+        $search = [];
+        $replace = [];
+        $escapes = [
+            ['attr' => 'src'],
+            ['attr' => 'href'],
+            ['attr' => 'action'],
+            ['attr' => 'name', 'tag' => 'a'],
+        ];
+
+        $nodes = $target->find('*[src],*[href],*[action],a[name]', 'descendant-or-self::');
+
+        foreach ($nodes as $node) {
+            foreach ($escapes as $escape) {
+                if (
+                    (!array_key_exists('tag', $escape) || strcasecmp($node->tagName, $escape['tag']) === 0)
+                    && $node->hasAttribute($escape['attr'])
+                ) {
+                    $value = $node->getAttribute($escape['attr']);
+                    $newName = 'DOMWRAP--ATTR-' . $i . '--' . $escape['attr'];
+
+                    $node->setAttribute($newName, $value);
+                    $node->removeAttribute($escape['attr']);
+
+                    // Determine if the attribute will be wrapped in single
+                    //  or double quotes and further encodings to apply.
+                    //
+                    // See xmlBufWriteQuotedString() in:
+                    //    https://github.com/GNOME/libxml2/blob/master/buf.c
+                    $hasQuot = strstr($value, '"');
+                    $hasApos = strstr($value, "'");
+
+                    if ($hasQuot && $hasApos) {
+                        $value = str_replace('"', '&quot;', $value);
+                    }
+
+                    $char = '"';
+
+                    if ($hasQuot && !$hasApos) {
+                        $char = "'";
+                    }
+
+                    $search[] = $newName. '=' . $char . $value . $char;
+                    $replace[] = $escape['attr']. '=' . $char . $value . $char;
+
+                    $i++;
+                }
+            }
+        }
+
+        $html = parent::saveHTML($target);
+
+        $html = str_replace($search, $replace, $html);
+
+        return $html;
+    }
+
     /*
      * @param $encoding string|null
      */
