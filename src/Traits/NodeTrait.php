@@ -36,7 +36,7 @@ trait NodeTrait
      *
      * @return NodeList|\DOMNode|null
      */
-    public function result(NodeList $nodeList) {
+    public function result(NodeList $nodeList): NodeList|\DOMNode|null {
         if ($nodeList->count()) {
             return $nodeList->first();
         }

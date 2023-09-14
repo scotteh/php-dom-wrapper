@@ -24,13 +24,13 @@ class NodeList extends NodeCollection
     }
 
     /** @var Document */
-    protected $document;
+    protected Document $document;
 
     /**
      * @param Document $document
      * @param iterable $nodes
      */
-    public function __construct(Document $document = null, iterable $nodes = null) {
+    public function __construct(Document $document = null, ?iterable $nodes = null) {
         parent::__construct($nodes);
 
         $this->document = $document;
@@ -73,7 +73,7 @@ class NodeList extends NodeCollection
     /**
      * {@inheritdoc}
      */
-    public function result(NodeList $nodeList) {
+    public function result(NodeList $nodeList): NodeList|\DOMNode|null {
         return $nodeList;
     }
 
@@ -89,21 +89,26 @@ class NodeList extends NodeCollection
     /**
      * @return mixed
      */
-    public function first() {
-        return !empty($this->nodes) ? $this->rewind() : null;
+    public function first(): mixed {
+        if (!empty($this->nodes)) {
+            $this->rewind();
+            return $this->current();
+        }
+
+        return null;
     }
 
     /**
      * @return mixed
      */
-    public function last() {
+    public function last(): mixed {
         return $this->end();
     }
 
     /**
      * @return mixed
      */
-    public function end() {
+    public function end(): mixed {
         return !empty($this->nodes) ? end($this->nodes) : null;
     }
 
@@ -112,7 +117,7 @@ class NodeList extends NodeCollection
      *
      * @return mixed
      */
-    public function get(int $key) {
+    public function get(int $key): mixed {
         if (isset($this->nodes[$key])) {
             return $this->nodes[$key];
         }
@@ -126,7 +131,7 @@ class NodeList extends NodeCollection
      *
      * @return self
      */
-    public function set(int $key, $value): self {
+    public function set(int $key, mixed $value): self {
         $this->nodes[$key] = $value;
 
         return $this;
@@ -174,21 +179,21 @@ class NodeList extends NodeCollection
      *
      * @return iterable
      */
-    public function reduce(callable $function, $initial = null) {
+    public function reduce(callable $function, mixed $initial = null) {
         return array_reduce($this->nodes, $function, $initial);
     }
 
     /**
      * @return array
      */
-    public function toArray() {
+    public function toArray(): iterable {
         return $this->nodes;
     }
 
     /**
      * @param iterable $nodes
      */
-    public function fromArray(iterable $nodes = null) {
+    public function fromArray(?iterable $nodes = null) {
         $this->nodes = [];
 
         if (is_iterable($nodes)) {
@@ -203,7 +208,7 @@ class NodeList extends NodeCollection
      *
      * @return NodeList
      */
-    public function merge($elements = []): NodeList {
+    public function merge(NodeList|array $elements = []): NodeList {
         if (!is_array($elements)) {
             $elements = $elements->toArray();
         }
@@ -217,7 +222,7 @@ class NodeList extends NodeCollection
      *
      * @return NodeList
      */
-    public function slice(int $start, int $end = null): NodeList {
+    public function slice(int $start, ?int $end = null): NodeList {
         $nodeList = array_slice($this->toArray(), $start, $end);
 
         return $this->newNodeList($nodeList);

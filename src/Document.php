@@ -68,7 +68,7 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function result(NodeList $nodeList) {
+    public function result(NodeList $nodeList): NodeList|\DOMNode|null {
         if ($nodeList->count()) {
             return $nodeList->first();
         }
@@ -79,22 +79,26 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function parent() {
+    public function parent(string|NodeList|\DOMNode|callable|null $selector = null): Document|Element|NodeList|null {
         return null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function parents() {
+    public function parents(?string $selector = null): NodeList {
         return $this->newNodeList();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function substituteWith($newNode): self {
-        $this->replaceChild($newNode, $this);
+    public function substituteWith(string|NodeList|\DOMNode|callable $input): self {
+        $this->manipulateNodesWithInput($input, function($node, $newNodes) {
+            foreach ($newNodes as $newNode) {
+                $node->replaceChild($newNode, $node);
+            }
+        });
 
         return $this;
     }
@@ -102,33 +106,33 @@ class Document extends \DOMDocument
     /**
      * {@inheritdoc}
      */
-    public function _clone() {
-        return null;
+    public function _clone(): void {
+        return;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getHtml(): string {
-        return $this->getOuterHtml();
+    public function getHtml(bool $isIncludeAll = false): string {
+        return $this->getOuterHtml($isIncludeAll);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setHtml($html): self {
-        if (!is_string($html) || trim($html) == '') {
+    public function setHtml(string|NodeList|\DOMNode|callable $input): self {
+        if (!is_string($input) || trim($input) == '') {
             return $this;
         }
 
         $internalErrors = libxml_use_internal_errors(true);
         if (\PHP_VERSION_ID < 80000) {
             $disableEntities = libxml_disable_entity_loader(true);
-            $this->composeXmlNode($html);
+            $this->composeXmlNode($input);
             libxml_use_internal_errors($internalErrors);
             libxml_disable_entity_loader($disableEntities);
         } else {
-            $this->composeXmlNode($html);
+            $this->composeXmlNode($input);
             libxml_use_internal_errors($internalErrors);
         }
 
@@ -173,8 +177,7 @@ class Document extends \DOMDocument
      *
      * @return string|bool
      */
-    #[\ReturnTypeWillChange]
-    public function saveHTML(\DOMNode $node = null) {
+    public function saveHTML(?\DOMNode $node = null): string|false {
         $target = $node ?: $this;
 
         // Undo any url encoding of attributes automatically applied by LibXML.
@@ -240,7 +243,7 @@ class Document extends \DOMDocument
     /*
      * @param $encoding string|null
      */
-    public function setEncoding(string $encoding = null) {
+    public function setEncoding(?string $encoding = null): void {
         $this->documentEncoding = $encoding;
     }
 
@@ -269,7 +272,7 @@ class Document extends \DOMDocument
     /*
      * @param $html string
      */
-    private function detectEncoding(string $html) {
+    private function detectEncoding(string $html): void {
         $charset = $this->getEncoding();
 
         if (is_null($charset)) {
@@ -320,10 +323,9 @@ class Document extends \DOMDocument
     }
 
     /**
-     * @param $html
+     * @param $html string
      */
-    private function composeXmlNode($html)
-    {
+    private function composeXmlNode(string $html): void {
         $this->detectEncoding($html);
 
         $html = $this->convertToUtf8($html);

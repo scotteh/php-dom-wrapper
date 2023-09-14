@@ -25,9 +25,9 @@ trait CommonTrait
     /**
      * @param NodeList $nodeList
      *
-     * @return NodeList|\DOMNode
+     * @return NodeList|\DOMNode|null
      */
-    abstract public function result(NodeList $nodeList);
+    abstract public function result(NodeList $nodeList): NodeList|\DOMNode|null;
 
     /**
      * @return bool
