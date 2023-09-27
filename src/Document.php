@@ -225,7 +225,11 @@ class Document extends \DOMDocument
                         $char = "'";
                     }
 
-                    $search[] = $newName. '=' . $char . $value . $char;
+                    // See xmlEscapeEntities() in:
+                    //    https://github.com/GNOME/libxml2/blob/master/xmlsave.c
+					$searchValue = str_replace(['<', '>', '&'], ['&lt;', '&gt;', '&amp;'], $value);
+
+                    $search[] = $newName. '=' . $char . $searchValue . $char;
                     $replace[] = $escape['attr']. '=' . $char . $value . $char;
 
                     $i++;
