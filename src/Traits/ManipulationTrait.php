@@ -184,7 +184,9 @@ trait ManipulationTrait
     public function substituteWith(string|NodeList|\DOMNode|callable $input): self {
         $this->manipulateNodesWithInput($input, function($node, $newNodes) {
             foreach ($newNodes as $newNode) {
-                $node->parent()->replaceChild($newNode, $node);
+                if ($node->parent()) {
+                    $node->parent()->replaceChild($newNode, $node);
+                }
             }
         });
 
