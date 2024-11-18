@@ -30,7 +30,7 @@ class NodeList extends NodeCollection
      * @param Document $document
      * @param iterable $nodes
      */
-    public function __construct(Document $document = null, ?iterable $nodes = null) {
+    public function __construct(?Document $document = null, ?iterable $nodes = null) {
         parent::__construct($nodes);
 
         $this->document = $document;

@@ -297,7 +297,7 @@ trait TraversalTrait
      *
      * @return NodeList
      */
-    public function parents(string $selector = null): NodeList {
+    public function parents(?string $selector = null): NodeList {
         return $this->parentsUntil(null, $selector);
     }
 
