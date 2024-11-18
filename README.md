@@ -500,9 +500,20 @@ $doc->find('div').removeClass('first');
 self substituteWith(string|NodeList|\DOMNode|callable $input)
 ```
 
+Replace each node in the current set with the contents provided.
+
 ##### Example
 
 ``` php
+$doc = (new Document())->html('<p><b>Hello</b> <b>World!</b></p>');
+echo $doc->find('b')->substituteWith(function($node) {
+    return '<em>' . $node->text() . '</em>';
+});
+```
+
+*Result:*
+``` html
+<p><em>Hello</em> <em>World!</em></p>
 ```
 
 ---
@@ -513,9 +524,33 @@ self substituteWith(string|NodeList|\DOMNode|callable $input)
 string|self text([string|NodeList|\DOMNode|callable $input = null])
 ```
 
-##### Example
+Get the text contents of the current set.
+
+##### Example (get)
 
 ``` php
+$doc = (new Document())->html('<div class="text">Hello World!</div>');
+echo $doc->find('.text')->text();
+```
+
+*Result:*
+``` html
+<div class="second"></div>
+```
+
+Set the text contents for current set.
+
+##### Example (set)
+
+``` php
+$doc = (new Document())->html('<div class="text"><string>The quick brown</strong> fox <em>jumps over the lazy dog</em></div>');
+$doc->find('.text')->text('Hello World!');
+echo $doc->html();
+```
+
+*Result:*
+``` html
+<div class="text">Hello World!</div>
 ```
 
 ---
@@ -1092,6 +1127,8 @@ $slicedNodes = $nodes->slice(1, 3);
 int count()
 ```
 
+Return number of nodes in the current set
+
 ##### Example
 
 ``` php
@@ -1107,6 +1144,8 @@ echo $nodes->count();
 ```
 self each(callable $function)
 ```
+
+Iterate through for each item in the existing set via callback
 
 ##### Example
 
