@@ -506,9 +506,10 @@ Replace each node in the current set with the contents provided.
 
 ``` php
 $doc = (new Document())->html('<p><b>Hello</b> <b>World!</b></p>');
-echo $doc->find('b')->substituteWith(function($node) {
+$doc->find('b')->substituteWith(function($node) {
     return '<em>' . $node->text() . '</em>';
 });
+echo $doc->html();
 ```
 
 *Result:*
@@ -535,7 +536,7 @@ echo $doc->find('.text')->text();
 
 *Result:*
 ``` html
-<div class="second"></div>
+Hello World!
 ```
 
 Set the text contents for current set.
